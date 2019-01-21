@@ -16,4 +16,12 @@ class ProjectFirestore {
   static Future<void> delete(String id) {
     return _firestore.collection(_collectionName).document(id).delete();
   }
+
+  static Future<QuerySnapshot> getAllProjects() {
+    return _firestore.collection(_collectionName).orderBy("title").getDocuments();
+  }
+
+  static Stream<QuerySnapshot> getAllProjectsAsStream() {
+    return _firestore.collection(_collectionName).orderBy("title").snapshots();
+  }
 }

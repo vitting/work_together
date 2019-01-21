@@ -4,8 +4,19 @@ class SubTaskMain extends StatelessWidget {
   static final String routeName = "subtaskmain";
   @override
   Widget build(BuildContext context) {
-    return Container(
-      
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Del opgaver"),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+
+        },
+        child: Icon(Icons.add),
+      ),
+      body: Container(
+
+      ),
     );
   }
 }

@@ -58,4 +58,16 @@ class CommentData {
       commentDate: (item["commentDate"] as Timestamp).toDate()
     );
   }
+
+  static Stream<QuerySnapshot> getCommentsByProjectId(String projectId) {
+    return CommentFirestore.getCommentsByProjectId(projectId);
+  }
+
+  static Stream<QuerySnapshot> getCommentsByTaskId(String taskId) {
+    return CommentFirestore.getCommentsByTaskId(taskId);
+  }
+
+  static Stream<QuerySnapshot> getCommentsBySubTaskId(String subTaskId) {
+    return CommentFirestore.getCommentsBySubTaskId(subTaskId);
+  }
 }

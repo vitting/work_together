@@ -1,12 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:work_together/helpers/user_auth.dart';
+import 'package:work_together/helpers/user_data.dart';
 
 class MainInherited extends StatefulWidget {
   final Widget child;
 
-  MainInherited({
-    this.child,
-  });
-
+  const MainInherited({Key key, this.child}) : super(key: key);
   @override
   MainInheritedState createState() => new MainInheritedState();
 
@@ -22,11 +22,32 @@ class MainInherited extends StatefulWidget {
 
 class MainInheritedState extends State<MainInherited> {
   bool canVibrate;
-  String systemLanguageCode = "en";
+  String systemLanguageCode = "da";
+  UserData userData;
+  bool isLoggedIn;
 
   @override
   void initState() {
     super.initState();
+
+    UserAuth.firebaseAuth.onAuthStateChanged.listen((FirebaseUser user) async {
+      print("************* Running Auth: $user");
+      if (mounted) {
+        setState(() {
+          isLoggedIn = user != null;
+        });
+      }
+
+      if (user != null) {
+        userData = await UserData.initUser(user);
+      }
+    });
+  }
+
+  void logout() {
+    setState(() {
+      isLoggedIn = false;
+    });
   }
 
   @override

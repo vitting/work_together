@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:work_together/helpers/file_firestore.dart';
 import 'package:work_together/helpers/system_helpers.dart';
@@ -49,5 +50,17 @@ class FileData {
       name: item["name"],
       extension: item["extension"]
     );
+  }
+
+  static Stream<QuerySnapshot> getFilesByProjectId(String projectId) {
+    return FileFirestore.getFilesByProjectId(projectId);
+  }
+
+  static Stream<QuerySnapshot> getFilesByTaskId(String taskId) {
+    return FileFirestore.getFilesByTaskId(taskId);
+  }
+
+  static Stream<QuerySnapshot> getFilesBySubTaskId(String subTaskId) {
+    return FileFirestore.getFilesBySubTaskId(subTaskId);
   }
 }

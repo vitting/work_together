@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:work_together/helpers/comment_data.dart';
 import 'package:work_together/helpers/file_data.dart';
@@ -12,8 +13,10 @@ class SubTaskData extends ItemData {
 
   SubTaskData(
       {String id,
-      @required String title,
+      String createdByUserId,
+      String title = "",
       String description = "",
+      DateTime createdDate,
       int progress = 0,
       int numberOfSub = 0,
       int color = 0,
@@ -21,8 +24,10 @@ class SubTaskData extends ItemData {
       @required this.taskId})
       : super(
             id: id,
+            createdByUserId: createdByUserId,
             title: title,
             description: description,
+            createdDate: createdDate,
             progress: progress,
             numberOfSub: numberOfSub,
             color: color);
@@ -34,7 +39,8 @@ class SubTaskData extends ItemData {
 
   Future<void> save() {
     if (id == null) {
-      id = id ?? SystemHelpers.generateUuid();
+      id = SystemHelpers.generateUuid();
+      createdDate = DateTime.now();
       return SubTaskFirestore.add(this);
     } else {
       return SubTaskFirestore.update(this);
@@ -62,8 +68,10 @@ class SubTaskData extends ItemData {
         projectId: item["projectId"],
         taskId: item["taskId"],
         id: item["id"],
+        createdByUserId: item["createdByUserId"],
         title: item["title"],
         description: item["description"],
+        createdDate: (item["createdDate"] as Timestamp).toDate(),
         progress: item["progress"],
         numberOfSub: item["numberOfSub"],
         color: item["color"]);
