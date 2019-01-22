@@ -6,14 +6,34 @@ class TaskFirestore {
   static String _collectionName = "tasks";
 
   static Future<void> add(TaskData item) {
-    return _firestore.collection(_collectionName).document(item.id).setData(item.toMap());
-  } 
+    return _firestore
+        .collection(_collectionName)
+        .document(item.id)
+        .setData(item.toMap());
+  }
 
   static Future<void> update(TaskData item) {
-    return _firestore.collection(_collectionName).document(item.id).updateData(item.toMap());
-  } 
+    return _firestore
+        .collection(_collectionName)
+        .document(item.id)
+        .updateData(item.toMap());
+  }
+
+  static Future<void> updateColor(String id, int color) {
+    return _firestore.collection(_collectionName).document(id).updateData({
+      "color": color
+    });
+  }
 
   static Future<void> delete(String id) {
     return _firestore.collection(_collectionName).document(id).delete();
-  }  
+  }
+
+  static Stream<QuerySnapshot> getTasksByProjectId(String id) {
+    return _firestore
+        .collection(_collectionName)
+        .where("projectId", isEqualTo: id)
+        .orderBy("title")
+        .snapshots();
+  }
 }

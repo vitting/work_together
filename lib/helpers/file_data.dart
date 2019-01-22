@@ -40,7 +40,7 @@ class FileData {
     return FileFirestore.delete(id);
   }
 
-  factory FileData.fromMap(dynamic item) {
+  factory FileData.fromMap(Map<String, dynamic> item) {
     return FileData(
       id: item["id"],
       projectId: item["projectId"],

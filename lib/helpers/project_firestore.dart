@@ -13,6 +13,12 @@ class ProjectFirestore {
     return _firestore.collection(_collectionName).document(item.id).updateData(item.toMap());
   } 
 
+  static Future<void> updateColor(String id, int color) {
+    return _firestore.collection(_collectionName).document(id).updateData({
+      "color": color
+    });
+  }
+
   static Future<void> delete(String id) {
     return _firestore.collection(_collectionName).document(id).delete();
   }

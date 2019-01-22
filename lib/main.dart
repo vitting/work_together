@@ -6,7 +6,6 @@ import 'package:work_together/ui/main/main_inheretedwidget.dart';
 import 'package:work_together/ui/project/project_create.dart';
 import 'package:work_together/ui/project/project_main.dart';
 import 'package:work_together/ui/signup/signup_main.dart';
-import 'package:work_together/ui/subTask/sub_task_create.dart';
 import 'package:work_together/ui/task/task_create.dart';
 
 void main() async {
@@ -22,7 +21,6 @@ void main() async {
         ProjectMain.routeName: (BuildContext context) => ProjectMain(),
         ProjectCreate.routeName: (BuildContext context) => ProjectCreate(),
         TaskCreate.routeName: (BuildContext context) => TaskCreate(),
-        SubTaskCreate.routeName: (BuildContext context) =>  SubTaskCreate(),
         SignupMain.routeName: (BuildContext context) => SignupMain()
       },
     ),

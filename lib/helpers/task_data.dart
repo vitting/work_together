@@ -13,9 +13,11 @@ class TaskData extends ItemData {
   TaskData(
       {String id,
       String createdByUserId,
+      String updatedByUserId,
       String title = "",
       String description = "",
       DateTime createdDate,
+      DateTime updatedDate,
       int progress = 0,
       int numberOfSub = 0,
       int color = 0,
@@ -23,9 +25,11 @@ class TaskData extends ItemData {
       : super(
             id: id,
             createdByUserId: createdByUserId,
+            updatedByUserId: updatedByUserId,
             title: title,
             description: description,
             createdDate: createdDate,
+            updatedDate: updatedDate,
             progress: progress,
             numberOfSub: numberOfSub,
             color: color);
@@ -42,10 +46,17 @@ class TaskData extends ItemData {
     if (id == null) {
       id = SystemHelpers.generateUuid();
       createdDate = DateTime.now();
+      updatedDate = createdDate;
+      createdByUserId = updatedByUserId;
       return TaskFirestore.add(this);
     } else {
       return TaskFirestore.update(this);
     }
+  }
+
+  Future<void> updateColor(int color) {
+    this.color = color;
+    return TaskFirestore.updateColor(id, color);
   }
 
   Future<void> delete() {
@@ -71,11 +82,17 @@ class TaskData extends ItemData {
         projectId: item["projectId"],
         id: item["id"],
         createdByUserId: item["createdByUserId"],
+        updatedByUserId: item["updatedByUserId"],
         title: item["title"],
         description: item["description"],
         createdDate: (item["createdDate"] as Timestamp).toDate(),
+        updatedDate: (item["updatedDate"] as Timestamp).toDate(),
         progress: item["progress"],
         numberOfSub: item["numberOfSub"],
         color: item["color"]);
+  }
+
+  static Stream<QuerySnapshot> getTasksAsStream(String projectId) {
+    return TaskFirestore.getTasksByProjectId(projectId);
   }
 }

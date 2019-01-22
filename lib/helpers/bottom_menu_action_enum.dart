@@ -1,0 +1,1 @@
+enum BottomMenuAction { edit, delete }
