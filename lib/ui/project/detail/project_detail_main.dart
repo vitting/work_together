@@ -1,7 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:work_together/helpers/comment_data.dart';
 import 'package:work_together/helpers/file_data.dart';
 import 'package:work_together/helpers/project_data.dart';
+import 'package:work_together/ui/comment/dialog_create_comment_widget.dart';
+import 'package:work_together/ui/main/main_inheretedwidget.dart';
 import 'package:work_together/ui/project/detail/project_detail_comments.dart';
 import 'package:work_together/ui/project/detail/project_detail_files.dart';
 import 'package:work_together/ui/project/detail/project_detail_overview.dart';
@@ -116,7 +119,7 @@ class _ProjectDetailMainState extends State<ProjectDetailMain> {
           tooltip: "Tilføj kommentar",
           child: Icon(Icons.add_comment),
           onPressed: () {
-            Navigator.of(context).pushNamed(TaskCreate.routeName);
+            _showCreateCommentDialog(context);
           },
         );
         break;
@@ -125,18 +128,34 @@ class _ProjectDetailMainState extends State<ProjectDetailMain> {
           tooltip: "Tilføj fil",
           child: Icon(Icons.file_upload),
           onPressed: () {
-            FileData f = FileData(
-                extension: "jpg",
-                projectId: widget.project.id,
-                type: "p",
-                name: "file_${Random().nextInt(1000).toString()}");
-
-            f.save();
+            
           },
         );
         break;
     }
 
     return floatingActionButton;
+  }
+
+  void _showCreateCommentDialog(BuildContext context) async {
+    String comment = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return DialogCreateComment();
+      }
+    );
+
+    if (comment != null && comment.isNotEmpty) {
+      CommentData commentData = CommentData(
+        comment: comment,
+        projectId: widget.project.id,
+        name: MainInherited.of(context).userData.name,
+        userId: MainInherited.of(context).userData.id,
+        photoUrl: MainInherited.of(context).userData.photoUrl,
+        type: "p"
+      );
+
+      commentData.save();
+    }
   }
 }

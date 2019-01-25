@@ -33,18 +33,21 @@ class ProjectDetailTasks extends StatelessWidget {
             DocumentSnapshot doc = snapshot.data.documents[position];
             TaskData task = TaskData.fromMap(doc.data);
 
-            return ListTile(
-              title: TitleRow(
-                title: task.title,
-                dotColor: DialogColorConvert.getDialogColor(task.color),
-                onTapMenu: (_) async {
-                  _showBottomMenuAction(context, await _showBottomMenu(context), task);
-                },
-                onTapColor: (DialogColors color) {
-                  task.updateColor(DialogColorConvert.getColorValue(color));
-                },
+            return Card(
+              child: ListTile(
+                title: TitleRow(
+                  title: task.title,
+                  dotColor: DialogColorConvert.getDialogColor(task.color),
+                  onTapMenu: (_) async {
+                    _showBottomMenuAction(
+                        context, await _showBottomMenu(context), task);
+                  },
+                  onTapColor: (DialogColors color) {
+                    task.updateColor(DialogColorConvert.getColorValue(color));
+                  },
+                ),
+                subtitle: Text(task.description),
               ),
-              subtitle: Text(task.description),
             );
           },
         );
@@ -78,7 +81,8 @@ class ProjectDetailTasks extends StatelessWidget {
         });
   }
 
-  void _showBottomMenuAction(BuildContext context, BottomMenuAction action, TaskData item) {
+  void _showBottomMenuAction(
+      BuildContext context, BottomMenuAction action, TaskData item) {
     switch (action) {
       case BottomMenuAction.edit:
         Navigator.of(context).push(MaterialPageRoute(

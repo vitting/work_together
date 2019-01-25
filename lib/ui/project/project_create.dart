@@ -21,16 +21,19 @@ class ProjectCreateState extends State<ProjectCreate> {
   Color _dotColor;
   DialogColors _dialogColors;
   ProjectData _project;
+  String _pageTitle;
 
   @override
     void initState() {
       super.initState();
 
       if (widget.project != null) {
+        _pageTitle = "Redigere project";
         _project = widget.project;
         _dialogColors = DialogColorConvert.getDialogColor(_project.color);
         _dotColor = DialogColorConvert.getColor(_dialogColors);
       } else {
+        _pageTitle = "Opret project";
         _dialogColors = DialogColorConvert.getDialogColor(0);
         _dotColor = DialogColorConvert.getColor(_dialogColors);
         _project = ProjectData();
@@ -41,7 +44,7 @@ class ProjectCreateState extends State<ProjectCreate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Opret projekt"),
+        title: Text(_pageTitle),
       ),
       body: Container(
         padding: EdgeInsets.all(10),

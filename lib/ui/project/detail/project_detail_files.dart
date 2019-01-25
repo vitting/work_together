@@ -26,9 +26,11 @@ class ProjectDetailFiles extends StatelessWidget {
           itemBuilder: (BuildContext context, int position) {
             DocumentSnapshot doc = snapshot.data.documents[position];
             FileData file = FileData.fromMap(doc.data);
-            return ListTile(
-              leading: Icon(FontAwesomeIcons.image),
-              title: Text("${file.name}.${file.extension}"),
+            return Card(
+              child: ListTile(
+                leading: Icon(FontAwesomeIcons.image),
+                title: Text("${file.name}.${file.extension}"),
+              ),
             );
           },
         );

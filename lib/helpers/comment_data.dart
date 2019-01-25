@@ -7,34 +7,45 @@ class CommentData {
   String id;
   String projectId;
   String taskId;
-  String subTaskId;
+
   /// Types p = project, t = task, s = subtask
-  String type; 
+  String type;
   String userId;
   String name;
+  String photoUrl;
   String comment;
   DateTime commentDate;
 
-  CommentData({this.id, @required this.projectId, this.taskId = "", this.subTaskId = "", @required this.type, @required this.userId, @required this.name, @required this.comment, this.commentDate});
+  CommentData(
+      {this.id,
+      @required this.projectId,
+      this.taskId,
+      @required this.type,
+      @required this.userId,
+      @required this.name,
+      @required this.photoUrl,
+      @required this.comment,
+      this.commentDate});
 
   Map<String, dynamic> toMap() {
     return {
       "id": id,
       "projectId": projectId,
       "taskId": taskId,
-      "subTaskId": subTaskId,
       "type": type,
       "userId": userId,
       "name": name,
+      "photoUrl": photoUrl,
       "comment": comment,
       "commentDate": Timestamp.fromDate(commentDate)
     };
   }
 
   Future<void> save() {
+    commentDate = DateTime.now();
+    
     if (id == null) {
       id = SystemHelpers.generateUuid();
-      commentDate = DateTime.now();
       return CommentFirestore.add(this);
     } else {
       return CommentFirestore.update(this);
@@ -47,16 +58,15 @@ class CommentData {
 
   factory CommentData.fromMap(dynamic item) {
     return CommentData(
-      id: item["id"],
-      projectId: item["projectId"],
-      taskId: item["taskId"],
-      subTaskId: item["subTaskId"],
-      type: item["type"],
-      userId: item["userId"],
-      name: item["name"],
-      comment: item["comment"],
-      commentDate: (item["commentDate"] as Timestamp).toDate()
-    );
+        id: item["id"],
+        projectId: item["projectId"],
+        taskId: item["taskId"],
+        type: item["type"],
+        userId: item["userId"],
+        name: item["name"],
+        photoUrl: item["photoUrl"],
+        comment: item["comment"],
+        commentDate: (item["commentDate"] as Timestamp).toDate());
   }
 
   static Stream<QuerySnapshot> getCommentsByProjectId(String projectId) {

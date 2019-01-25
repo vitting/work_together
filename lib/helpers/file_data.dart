@@ -7,22 +7,22 @@ class FileData {
   String id;
   String projectId;
   String taskId;
-  String subTaskId;
   /// Types p = project, t = task, s = subtask
   String type; 
   String name;
+  String description;
   String extension;
 
-  FileData({this.id, @required this.projectId, this.taskId = "", this.subTaskId = "", @required this.type, @required this.name, @required this.extension});
+  FileData({this.id, @required this.projectId, this.taskId = "", @required this.type, @required this.name, this.description = "", @required this.extension});
 
   Map<String, dynamic> toMap() {
     return {
       "id": id,
       "projectId": projectId,
       "taskId": taskId,
-      "subTaskId": subTaskId,
       "type": type,
       "name": name,
+      "description": description,
       "extension": extension
     };
   }
@@ -45,9 +45,9 @@ class FileData {
       id: item["id"],
       projectId: item["projectId"],
       taskId: item["taskId"],
-      subTaskId: item["subTaskId"],
       type: item["type"],
       name: item["name"],
+      description: item["description"],
       extension: item["extension"]
     );
   }

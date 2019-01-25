@@ -73,7 +73,7 @@ class LoginMainState extends State<LoginMain> {
             }
           },
         ),
-        Text("eller gå til", textAlign: TextAlign.center,),
+        Text("eller", textAlign: TextAlign.center,),
         FlatButton.icon(
           icon: Icon(Icons.person_add),
           label: Text("Opret ny bruger"),

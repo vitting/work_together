@@ -22,16 +22,19 @@ class TaskCreateState extends State<TaskCreate> {
   Color _dotColor;
   DialogColors _dialogColors;
   TaskData _task;
+  String _pageTitle;
 
   @override
   void initState() {
     super.initState();
 
     if (widget.task != null) {
+      _pageTitle = "Redigere opgave";
       _task = widget.task;
       _dialogColors = DialogColorConvert.getDialogColor(_task.color);
       _dotColor = DialogColorConvert.getColor(_dialogColors);
     } else {
+      _pageTitle = "Opret opgave";
       _dialogColors = DialogColorConvert.getDialogColor(0);
       _dotColor = DialogColorConvert.getColor(_dialogColors);
       _task = TaskData(projectId: widget.projectId);
@@ -42,7 +45,7 @@ class TaskCreateState extends State<TaskCreate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Opret Opgave"),
+        title: Text(_pageTitle),
       ),
       body: Container(
         padding: EdgeInsets.all(10),

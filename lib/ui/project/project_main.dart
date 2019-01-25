@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:work_together/helpers/bottom_menu_action_enum.dart';
 import 'package:work_together/helpers/date_time_helpers.dart';
 import 'package:work_together/helpers/project_data.dart';
+import 'package:work_together/helpers/user_auth.dart';
 import 'package:work_together/ui/project/detail/project_detail_main.dart';
 import 'package:work_together/ui/project/project_create.dart';
 import 'package:work_together/ui/widgets/dialog_color_widget.dart';
@@ -16,6 +17,14 @@ class ProjectMain extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: Text("Projekter"),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.help),
+              onPressed: () async {
+                await UserAuth.logout();
+              },
+            )
+          ],
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {

@@ -7,6 +7,7 @@ import 'package:work_together/ui/project/project_create.dart';
 import 'package:work_together/ui/project/project_main.dart';
 import 'package:work_together/ui/signup/signup_main.dart';
 import 'package:work_together/ui/task/task_create.dart';
+import 'package:work_together/ui/test.dart';
 
 void main() async {
   final Firestore firestore = Firestore.instance;
@@ -17,6 +18,7 @@ void main() async {
       initialRoute: "/",
       routes: <String, WidgetBuilder>{
         "/": (BuildContext context) => Home(),
+        // "/": (BuildContext context) => TestWidget(),
         LoginMain.routeName: (BuildContext context) => LoginMain(),
         ProjectMain.routeName: (BuildContext context) => ProjectMain(),
         ProjectCreate.routeName: (BuildContext context) => ProjectCreate(),
