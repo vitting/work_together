@@ -3,13 +3,19 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:validate/validate.dart';
 import 'package:work_together/helpers/config.dart';
 import 'package:work_together/helpers/firestorage.dart';
 import 'package:work_together/helpers/user_auth.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:work_together/helpers/user_data.dart';
+import 'package:work_together/helpers/validator_helper.dart';
 import 'package:work_together/ui/widgets/circle_profile_image_widget.dart';
+import 'package:work_together/ui/widgets/round_button_widget.dart';
 
 enum ImageFileDialogAction { add, remove }
+enum FrontImageAction { image, noImage, loading }
 
 class ImageFileDialog {
   final dynamic image;
@@ -36,14 +42,21 @@ class _SignupMainState extends State<SignupMain> {
       TextEditingController(text: "");
   final TextEditingController _password2Controller =
       TextEditingController(text: "");
-  String _profileImageDefault =
-      "assets/images/blank_profile_picture_blue_transparent_250x250.png";
   dynamic _profileImage =
       "assets/images/blank_profile_picture_blue_transparent_250x250.png";
   CircleProfileImageType _profileImageType = CircleProfileImageType.asset;
-  IconData _profileImageIcon = Icons.add_a_photo;
-  int _fileUploadBytesTransferred = 0;
   bool _profileImageLoaded = false;
+  Widget _profileImageFront;
+  String _profileImageUrl = "";
+  bool _isLoading = false;
+  bool _obscurePassword = true;
+  Color _showPasswordButtonColor;
+
+  @override
+  void initState() {
+    super.initState();
+    _profileImageFront = _getFrontIcon(FrontImageAction.noImage);
+  }
 
   @override
   void dispose() {
@@ -74,9 +87,7 @@ class _SignupMainState extends State<SignupMain> {
                       type: _profileImageType,
                       image: _profileImage,
                       size: 80,
-                      icon: _profileImageIcon,
-                      iconColor: Colors.white70,
-                      iconSize: 40,
+                      front: _profileImageFront,
                       backgroundColor: Colors.blue,
                       onTap: (_) {
                         _showBottomMenu(context);
@@ -84,10 +95,12 @@ class _SignupMainState extends State<SignupMain> {
                     ),
                   ],
                 ),
-                Text(_fileUploadBytesTransferred.toString()),
+                SizedBox(
+                  height: 20,
+                ),
                 TextFormField(
                   initialValue: _nameController.text,
-                  maxLength: 50,
+                  inputFormatters: [LengthLimitingTextInputFormatter(50)],
                   decoration: InputDecoration(labelText: "Navn"),
                   validator: (String value) {
                     if (value.trim().isEmpty) {
@@ -98,67 +111,93 @@ class _SignupMainState extends State<SignupMain> {
                     _nameController.text = value.trim();
                   },
                 ),
+                SizedBox(
+                  height: 20,
+                ),
                 TextFormField(
                   initialValue: _emailController.text,
-                  maxLength: 50,
+                  inputFormatters: [LengthLimitingTextInputFormatter(50)],
                   decoration: InputDecoration(labelText: "E-mail"),
                   validator: (String value) {
                     if (value.trim().isEmpty) {
                       return "Udfyld e-email adresse";
+                    }
+
+                    try {
+                      Validate.isEmail(value);
+                    } catch (e) {
+                      return "Ikke en valid e-mail adresse";
                     }
                   },
                   onSaved: (String value) {
                     _emailController.text = value.trim();
                   },
                 ),
+                SizedBox(
+                  height: 20,
+                ),
                 TextFormField(
                     key: _passwordKey,
                     initialValue: _passwordController.text,
-                    maxLength: 50,
-                    obscureText: true,
-                    decoration: InputDecoration(labelText: "Kodeord"),
+                    inputFormatters: [LengthLimitingTextInputFormatter(50)],
+                    obscureText: _obscurePassword,
+                    decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                            color: _showPasswordButtonColor,
+                            icon: Icon(Icons.visibility),
+                            onPressed: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                                _showPasswordButtonColor =
+                                    _obscurePassword ? null : Colors.blue[900];
+                              });
+                            }),
+                        labelText: "Kodeord",
+                        helperText: "Skal bestå af mindst 6 tegn"),
                     validator: (String value) {
-                      if (value.trim().isEmpty) {
-                        return "Udfyld kodeord";
-                      } else if (value.trim().length < 6) {
-                        return "Kodeordet skal være på mindst 6 tegn";
-                      }
+                      return ValidatorHelper.isPassword(value);
                     },
                     onSaved: (String value) {
                       _passwordController.text = value.trim();
                     }),
                 TextFormField(
                   initialValue: _password2Controller.text,
-                  maxLength: 50,
-                  obscureText: true,
+                  inputFormatters: [LengthLimitingTextInputFormatter(50)],
+                  obscureText: _obscurePassword,
                   decoration: InputDecoration(labelText: "Gentag kodeord"),
                   validator: (String value) {
-                    if (value.trim().isEmpty) {
-                      return "Udfyld kodeord";
+                    String returnValue = ValidatorHelper.isPassword(value);
+
+                    if (returnValue != null) {
+                      return returnValue;
                     } else if (value != _passwordKey.currentState.value) {
                       return "Kodeord er ikke ens";
-                    } else if (value.trim().length < 6) {
-                      return "Kodeordet skal være på mindst 6 tegn";
                     }
                   },
                   onSaved: (String value) {
                     _password2Controller.text = value.trim();
                   },
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
+                SizedBox(
+                  height: 30,
                 ),
-                FlatButton.icon(
-                  icon: Icon(Icons.person_add),
-                  label: Text("Opret"),
+                RoundButton(
+                  disabled: _isLoading,
+                  text: "Opret",
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
+                      String profileImage = Config.noProfilePicture;
+                      if (_profileImageUrl.isNotEmpty) {
+                        profileImage = _profileImageUrl;
+                      }
+
                       FirebaseUser user = await UserAuth.createUser(
                           _emailController.text,
                           _passwordController.text,
                           _nameController.text,
-                          Config.noProfilePicture);
+                          profileImage);
+
                       if (user != null) {
                         Navigator.of(context).pop();
                       } else {
@@ -179,16 +218,23 @@ class _SignupMainState extends State<SignupMain> {
     await showDialog<void>(
         context: context,
         builder: (BuildContext dialogContext) {
-          return AlertDialog(
+          return SimpleDialog(
+            contentPadding: EdgeInsets.all(20),
             title: Text("E-mail eksistere"),
-            content: Text(
-                "Vi kan desværre ikke oprette din konto da den e-mail adresse du har indtastet allerede er i brug.\n\nPrøv med en anden e-mail adresse."),
-            actions: <Widget>[
-              FlatButton(
-                child: Text("Ok"),
-                onPressed: () {
-                  Navigator.of(dialogContext).pop();
-                },
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                    "Vi kan desværre ikke oprette din konto da den e-mail adresse du har indtastet allerede er i brug.\n\nPrøv med en anden e-mail adresse.", textAlign: TextAlign.center,),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: RoundButton(
+                  text: "Ok",
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop();
+                  },
+                ),
               )
             ],
           );
@@ -203,16 +249,18 @@ class _SignupMainState extends State<SignupMain> {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  _profileImageLoaded ? ListTile(
-                    leading: Icon(Icons.image),
-                    title: Text("Fjern billede"),
-                    onTap: () async {
-                      Navigator.of(bottomMenuContext).pop(ImageFileDialog(
-                          _profileImageDefault,
-                          ImageFileDialogAction.remove,
-                          CircleProfileImageType.asset));
-                    },
-                  ) : Container(),
+                  _profileImageLoaded
+                      ? ListTile(
+                          leading: Icon(Icons.image),
+                          title: Text("Fjern billede"),
+                          onTap: () async {
+                            Navigator.of(bottomMenuContext).pop(ImageFileDialog(
+                                Config.noProfilePictureBlueAsset,
+                                ImageFileDialogAction.remove,
+                                CircleProfileImageType.asset));
+                          },
+                        )
+                      : Container(),
                   ListTile(
                     leading: Icon(Icons.image),
                     title: Text("Tilføj billede fra galleri"),
@@ -247,30 +295,54 @@ class _SignupMainState extends State<SignupMain> {
 
     if (imageFileDialog != null) {
       if (imageFileDialog.action == ImageFileDialogAction.add) {
+        setState(() {
+          _isLoading = true;
+          _profileImageFront = _getFrontIcon(FrontImageAction.loading);
+        });
+
         StorageUploadTask task =
             FirebaseStorageHelper.uploadProfileImage(imageFileDialog.image);
 
-        task.events.listen((StorageTaskEvent event) {
-            setState(() {
-              print("${event.snapshot.bytesTransferred} / ${event.snapshot.totalByteCount}");
-              double a = event.snapshot.bytesTransferred * 100 / event.snapshot.totalByteCount;
-              print(a.toString());
-              _fileUploadBytesTransferred = event.snapshot.bytesTransferred;
-            });
-        });
-
         StorageTaskSnapshot snapshot = await task.onComplete;
-        print(await snapshot.ref.getDownloadURL());
+        String url = await snapshot.ref.getDownloadURL();
+
+        setState(() {
+          _isLoading = false;
+          _profileImageFront = _getFrontIcon(FrontImageAction.image);
+          _profileImageUrl = url;
+        });
+      } else if (imageFileDialog.action == ImageFileDialogAction.remove) {
+        _profileImageUrl = "";
       }
 
       setState(() {
-        _profileImageLoaded = true;
+        _profileImageLoaded =
+            imageFileDialog.action == ImageFileDialogAction.add;
         _profileImage = imageFileDialog.image;
         _profileImageType = imageFileDialog.imageType;
-        _profileImageIcon = imageFileDialog.action == ImageFileDialogAction.add
-            ? null
-            : Icons.add_a_photo;
+        _profileImageFront = imageFileDialog.action == ImageFileDialogAction.add
+            ? _getFrontIcon(FrontImageAction.image)
+            : _getFrontIcon(FrontImageAction.noImage);
       });
     }
+  }
+
+  Widget _getFrontIcon(FrontImageAction action) {
+    Widget returnValue;
+    switch (action) {
+      case FrontImageAction.image:
+        returnValue = null;
+        break;
+      case FrontImageAction.noImage:
+        returnValue = Icon(Icons.add_a_photo, color: Colors.white70, size: 40);
+        break;
+      case FrontImageAction.loading:
+        returnValue = CircularProgressIndicator(
+          strokeWidth: 10,
+        );
+        break;
+    }
+
+    return returnValue;
   }
 }

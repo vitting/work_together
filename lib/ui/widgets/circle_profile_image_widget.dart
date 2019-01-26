@@ -1,19 +1,18 @@
-import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:work_together/helpers/config.dart';
 
 enum CircleProfileImageType { url, asset, file, none }
 
 class CircleProfileImage extends StatelessWidget {
   final ValueChanged<bool> onTap;
+
   /// Can be a String or a File object
   final dynamic image;
   final double size;
   final CircleProfileImageType type;
-  final IconData icon;
-  final double iconSize;
-  final Color iconColor;
+  final Widget front;
   final BoxFit fit;
   final Color backgroundColor;
   final String tooltip;
@@ -26,12 +25,12 @@ class CircleProfileImage extends StatelessWidget {
       this.image = "",
       this.size = 40,
       @required this.type,
-      this.icon,
-      this.iconColor = Colors.black,
-      this.iconSize = 14,
+      this.front,
       this.fit = BoxFit.cover,
       this.backgroundColor = Colors.blue,
-      this.tooltip = "", this.borderWidth = 0, this.borderColor = Colors.black})
+      this.tooltip = "",
+      this.borderWidth = 0,
+      this.borderColor = Colors.black})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -57,43 +56,44 @@ class CircleProfileImage extends StatelessWidget {
           Container(
             width: size,
             height: size,
-            decoration:
-                BoxDecoration(
-                  color: backgroundColor, 
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: borderColor,
-                    width: borderWidth
+            decoration: BoxDecoration(
+                color: backgroundColor,
+                shape: BoxShape.circle,
+                border: Border.all(color: borderColor, width: borderWidth)),
+            child: type != CircleProfileImageType.none
+                ? ClipOval(
+                    child: type == CircleProfileImageType.asset
+                        ? Image.asset(
+                            image,
+                            fit: fit,
+                            width: size,
+                            height: size,
+                          )
+                        : type == CircleProfileImageType.url
+                            ? CachedNetworkImage(
+                                imageUrl: image,
+                                fit: fit,
+                                width: size,
+                                height: size,
+                                placeholder: Image.asset(Config.noProfilePictureBlueAsset),
+                                errorWidget: Image.asset(Config.noProfilePictureBlueAsset)
+                              )
+                            : Image.file(
+                                image,
+                                fit: fit,
+                                width: size,
+                                height: size,
+                              ),
                   )
-                  ),
-            child: type != CircleProfileImageType.none ? ClipOval(
-              child: type == CircleProfileImageType.asset
-                  ? Image.asset(
-                      image,
-                      fit: fit,
-                      width: size,
-                      height: size,
-                    )
-                  : type == CircleProfileImageType.url ? CachedNetworkImage(
-                      imageUrl: image,
-                      fit: fit,
-                      width: size,
-                      height: size,
-                    ) : Image.file(
-                      image,
-                      fit: fit,
-                      width: size,
-                      height: size,
-                      ),
-            ) : null,
+                : null,
           ),
-          icon != null
+          front != null
               ? Positioned(
                   top: 0,
                   bottom: 0,
                   left: 0,
                   right: 0,
-                  child: Icon(icon, size: iconSize, color: iconColor),
+                  child: front,
                 )
               : Container()
         ],

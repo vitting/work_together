@@ -10,7 +10,7 @@ class FirebaseStorageHelper {
   
   static StorageUploadTask uploadProfileImage(File file) {
     String filename = basename(file.path);
-    String ext = extension(file.path);
+    String ext = extension(file.path).toLowerCase();
     StorageMetadata meta = StorageMetadata(
       customMetadata: {
         "orginalFilename": filename

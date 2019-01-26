@@ -124,7 +124,7 @@ class DialogColor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      contentPadding: EdgeInsets.symmetric(vertical: 20),
+      contentPadding: EdgeInsets.all(20),
       title: Text("Vælg farve"),
       children: <Widget>[
         GridView.count(

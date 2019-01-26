@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:work_together/helpers/bottom_menu_action_enum.dart';
 import 'package:work_together/helpers/date_time_helpers.dart';
 import 'package:work_together/helpers/project_data.dart';
-import 'package:work_together/helpers/user_auth.dart';
 import 'package:work_together/ui/project/detail/project_detail_main.dart';
 import 'package:work_together/ui/project/project_create.dart';
 import 'package:work_together/ui/widgets/dialog_color_widget.dart';
+import 'package:work_together/ui/widgets/drawer_widget.dart';
 import 'package:work_together/ui/widgets/title_row_widget.dart';
 
 class ProjectMain extends StatelessWidget {
@@ -15,16 +15,9 @@ class ProjectMain extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        drawer: DrawerWidget(),
         appBar: AppBar(
-          title: Text("Projekter"),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.help),
-              onPressed: () async {
-                await UserAuth.logout();
-              },
-            )
-          ],
+          title: Text("Projekter")
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {

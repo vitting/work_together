@@ -31,20 +31,23 @@ class MainInheritedState extends State<MainInherited> {
     super.initState();
 
     UserAuth.firebaseAuth.onAuthStateChanged.listen((FirebaseUser user) async {
-      print("************* Running Auth: $user");
+      // print(user);
+
+      if (user != null) {
+        if (user.photoUrl != null) {
+          userData = await UserData.initUser(user);
+        }
+      }
+      
       if (mounted) {
         setState(() {
           isLoggedIn = user != null;
         });
       }
-
-      if (user != null) {
-        userData = await UserData.initUser(user);
-      }
     });
   }
 
-  void logout() {
+  void logout() async {
     setState(() {
       isLoggedIn = false;
     });

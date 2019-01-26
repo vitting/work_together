@@ -5,8 +5,8 @@ class UserFirestore {
   static Firestore _firestore = Firestore.instance;
   static String _collectionName = "users";
 
-  static Future<void> add(UserData item) {
-    return _firestore.collection(_collectionName).document(item.id).setData(item.toMap());
+  static Future<void> add(UserData item, {bool merge = false}) {
+    return _firestore.collection(_collectionName).document(item.id).setData(item.toMap(), merge: merge);
   } 
 
   static Future<void> update(UserData item) {

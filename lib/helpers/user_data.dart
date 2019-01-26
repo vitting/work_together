@@ -62,6 +62,19 @@ class UserData {
       photoUrl: user.photoUrl ?? Config.noProfilePicture
     );
 
+    await UserFirestore.add(userData, merge: true);
+    
+    return userData;
+  }
+
+  static Future<UserData> createUser(FirebaseUser user, String name, String photoUrl) async {
+    UserData userData = UserData(
+      id: user.uid,
+      name: name,
+      email: user.email,
+      photoUrl: photoUrl
+    );
+
     await UserFirestore.add(userData);
     
     return userData;

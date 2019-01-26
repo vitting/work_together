@@ -1,7 +1,5 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:work_together/helpers/comment_data.dart';
-import 'package:work_together/helpers/file_data.dart';
 import 'package:work_together/helpers/project_data.dart';
 import 'package:work_together/ui/comment/dialog_create_comment_widget.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
