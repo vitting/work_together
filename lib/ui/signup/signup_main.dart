@@ -9,7 +9,6 @@ import 'package:work_together/helpers/config.dart';
 import 'package:work_together/helpers/firestorage.dart';
 import 'package:work_together/helpers/user_auth.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:work_together/helpers/user_data.dart';
 import 'package:work_together/helpers/validator_helper.dart';
 import 'package:work_together/ui/widgets/circle_profile_image_widget.dart';
 import 'package:work_together/ui/widgets/round_button_widget.dart';
@@ -48,6 +47,7 @@ class _SignupMainState extends State<SignupMain> {
   bool _profileImageLoaded = false;
   Widget _profileImageFront;
   String _profileImageUrl = "";
+  String _profileImageFilename = "";
   bool _isLoading = false;
   bool _obscurePassword = true;
   Color _showPasswordButtonColor;
@@ -65,6 +65,9 @@ class _SignupMainState extends State<SignupMain> {
     _emailController.dispose();
     _passwordController.dispose();
     _password2Controller.dispose();
+    if (_profileImageFilename.isNotEmpty) {
+      FirebaseStorageHelper.deleteProfileImage(_profileImageFilename);
+    }
   }
 
   @override
@@ -187,9 +190,10 @@ class _SignupMainState extends State<SignupMain> {
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
-                      String profileImage = Config.noProfilePicture;
+                      String profileImage = Config.noProfilePictureFilename + "|" + Config.noProfilePicture;
+
                       if (_profileImageUrl.isNotEmpty) {
-                        profileImage = _profileImageUrl;
+                        profileImage = _profileImageFilename + "|" + _profileImageUrl;
                       }
 
                       FirebaseUser user = await UserAuth.createUser(
@@ -199,6 +203,7 @@ class _SignupMainState extends State<SignupMain> {
                           profileImage);
 
                       if (user != null) {
+                        _profileImageFilename = "";
                         Navigator.of(context).pop();
                       } else {
                         _showEmailError(context);
@@ -225,7 +230,9 @@ class _SignupMainState extends State<SignupMain> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
-                    "Vi kan desværre ikke oprette din konto da den e-mail adresse du har indtastet allerede er i brug.\n\nPrøv med en anden e-mail adresse.", textAlign: TextAlign.center,),
+                  "Vi kan desværre ikke oprette din konto da den e-mail adresse du har indtastet allerede er i brug.\n\nPrøv med en anden e-mail adresse.",
+                  textAlign: TextAlign.center,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
@@ -300,19 +307,24 @@ class _SignupMainState extends State<SignupMain> {
           _profileImageFront = _getFrontIcon(FrontImageAction.loading);
         });
 
-        StorageUploadTask task =
-            FirebaseStorageHelper.uploadProfileImage(imageFileDialog.image);
-
+        StorageUploadTaskData taskData = FirebaseStorageHelper.uploadProfileImage(imageFileDialog.image);
+        StorageUploadTask task = taskData.task;
         StorageTaskSnapshot snapshot = await task.onComplete;
         String url = await snapshot.ref.getDownloadURL();
-
+        
         setState(() {
           _isLoading = false;
           _profileImageFront = _getFrontIcon(FrontImageAction.image);
           _profileImageUrl = url;
+          _profileImageFilename = taskData.filename;
         });
       } else if (imageFileDialog.action == ImageFileDialogAction.remove) {
+        if (_profileImageFilename.isNotEmpty) {
+          await FirebaseStorageHelper.deleteProfileImage(_profileImageFilename);
+        }
+        
         _profileImageUrl = "";
+        _profileImageFilename = "";
       }
 
       setState(() {

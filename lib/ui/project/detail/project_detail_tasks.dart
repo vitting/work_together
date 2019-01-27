@@ -5,6 +5,7 @@ import 'package:work_together/helpers/project_data.dart';
 import 'package:work_together/helpers/task_data.dart';
 import 'package:work_together/ui/task/task_create.dart';
 import 'package:work_together/ui/widgets/dialog_color_widget.dart';
+import 'package:work_together/ui/widgets/no_data_widget.dart';
 import 'package:work_together/ui/widgets/title_row_widget.dart';
 
 class ProjectDetailTasks extends StatelessWidget {
@@ -19,12 +20,10 @@ class ProjectDetailTasks extends StatelessWidget {
     return StreamBuilder(
       stream: project.getTasksAsStream(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (!snapshot.hasData) {
-          return Text("Ingen Opgaver");
-        }
-
-        if (snapshot.hasData && snapshot.data.documents.length == 0) {
-          return Text("Ingen Opgaver");
+        if ((!snapshot.hasData) || (snapshot.hasData && snapshot.data.documents.length == 0)) {
+          return NoData(
+            text: "Ingen Opgaver",
+          );
         }
 
         return ListView.builder(
@@ -43,7 +42,9 @@ class ProjectDetailTasks extends StatelessWidget {
                         context, await _showBottomMenu(context), task);
                   },
                   onTapColor: (DialogColors color) {
-                    task.updateColor(DialogColorConvert.getColorValue(color));
+                    if (color != null) {
+                      task.updateColor(DialogColorConvert.getColorValue(color));
+                    }
                   },
                 ),
                 subtitle: Text(task.description),

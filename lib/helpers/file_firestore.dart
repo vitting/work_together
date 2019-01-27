@@ -34,13 +34,4 @@ class FileFirestore {
         .orderBy("name")
         .snapshots();
   }
-
-  static Stream<QuerySnapshot> getFilesBySubTaskId(String subTaskId) {
-    return _firestore
-        .collection(_collectionName)
-        .where("subTaskId", isEqualTo: subTaskId)
-        .where("type", isEqualTo: "s")
-        .orderBy("name")
-        .snapshots();
-  }
 }

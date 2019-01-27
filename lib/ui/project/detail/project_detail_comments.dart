@@ -5,6 +5,7 @@ import 'package:work_together/helpers/comment_data.dart';
 import 'package:work_together/helpers/config.dart';
 import 'package:work_together/helpers/date_time_helpers.dart';
 import 'package:work_together/helpers/project_data.dart';
+import 'package:work_together/ui/widgets/no_data_widget.dart';
 
 class ProjectDetailComments extends StatelessWidget {
   final ProjectData project;
@@ -15,12 +16,10 @@ class ProjectDetailComments extends StatelessWidget {
     return StreamBuilder(
       stream: project.getCommentsAsStream(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (!snapshot.hasData) {
-          return Text("Ingen kommentar");
-        }
-
-        if (snapshot.hasData && snapshot.data.documents.length == 0) {
-          return Text("Ingen kommentar");
+        if ((!snapshot.hasData) || (snapshot.hasData && snapshot.data.documents.length == 0)) {
+          return NoData(
+            text: "Ingen kommentar",
+          );
         }
 
         return ListView.builder(

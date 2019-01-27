@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:work_together/helpers/project_data.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
 import 'package:work_together/ui/widgets/dialog_color_widget.dart';
-import 'package:work_together/ui/widgets/dot_button_widget.dart';
 
 class ProjectCreate extends StatefulWidget {
   static final String routeName = "projectcreate";
@@ -81,29 +80,6 @@ class ProjectCreateState extends State<ProjectCreate> {
                   _project.description = value.trim();
                 },
               ),
-              Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text("Project farve"),
-                      DotButton(
-                    size: 50,
-                    color: _dotColor,
-                    dialogColor: _dialogColors,
-                    onTap: (DialogColors color) async {
-                      DialogColors choosenColor =
-                          await _showColorDialog(context);
-                      if (choosenColor != null) {
-                        _project.color =
-                            DialogColorConvert.getColorValue(choosenColor);
-                        setState(() {
-                          _dialogColors = choosenColor;
-                          _dotColor = DialogColorConvert.getColor(choosenColor);
-                        });
-                      }
-                    },
-                  )
-                    ],
-                  ),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10),
                   ),
@@ -124,13 +100,5 @@ class ProjectCreateState extends State<ProjectCreate> {
         ),
       ),
     );
-  }
-
-  Future<DialogColors> _showColorDialog(BuildContext context) {
-    return showDialog<DialogColors>(
-        context: context,
-        builder: (BuildContext dialogContext) {
-          return DialogColor();
-        });
   }
 }

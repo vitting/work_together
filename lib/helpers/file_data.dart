@@ -7,19 +7,21 @@ class FileData {
   String id;
   String projectId;
   String taskId;
-  /// Types p = project, t = task, s = subtask
+  String userId;
+  /// Types p = project, t = task
   String type; 
   String name;
   String description;
   String extension;
 
-  FileData({this.id, @required this.projectId, this.taskId = "", @required this.type, @required this.name, this.description = "", @required this.extension});
+  FileData({this.id, @required this.projectId, this.taskId = "", @required this.userId, @required this.type, @required this.name, this.description = "", @required this.extension});
 
   Map<String, dynamic> toMap() {
     return {
       "id": id,
       "projectId": projectId,
       "taskId": taskId,
+      "userId": userId,
       "type": type,
       "name": name,
       "description": description,
@@ -45,6 +47,7 @@ class FileData {
       id: item["id"],
       projectId: item["projectId"],
       taskId: item["taskId"],
+      userId: item["userId"],
       type: item["type"],
       name: item["name"],
       description: item["description"],
@@ -58,9 +61,5 @@ class FileData {
 
   static Stream<QuerySnapshot> getFilesByTaskId(String taskId) {
     return FileFirestore.getFilesByTaskId(taskId);
-  }
-
-  static Stream<QuerySnapshot> getFilesBySubTaskId(String subTaskId) {
-    return FileFirestore.getFilesBySubTaskId(subTaskId);
   }
 }

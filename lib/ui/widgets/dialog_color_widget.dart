@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:work_together/ui/widgets/dot_button_widget.dart';
+import 'package:work_together/ui/widgets/round_button_widget.dart';
 
 enum DialogColors {
   yellow,
@@ -196,6 +197,15 @@ class DialogColor extends StatelessWidget {
               },
             ),
           ],
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: RoundButton(
+            text: "Luk",
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
         )
       ],
     );

@@ -16,6 +16,7 @@ class TitleRow extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(right: 10),
           child: DotButton(
+            size: 30,
             padding: 0,
             color: DialogColorConvert.getColor(dotColor),
             dialogColor: dotColor,

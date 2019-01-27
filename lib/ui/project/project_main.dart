@@ -47,7 +47,9 @@ class ProjectMain extends StatelessWidget {
                             _showBottomMenuAction(context, await _showBottomMenu(context), projectItem);
                           },
                           onTapColor: (DialogColors color) {
-                            projectItem.updateColor(DialogColorConvert.getColorValue(color));
+                            if (color != null) {
+                              projectItem.updateColor(DialogColorConvert.getColorValue(color));
+                            }
                           },
                         ),
                         subtitle: Column(

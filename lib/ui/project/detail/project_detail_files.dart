@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:work_together/helpers/file_data.dart';
 import 'package:work_together/helpers/project_data.dart';
+import 'package:work_together/ui/widgets/no_data_widget.dart';
 
 class ProjectDetailFiles extends StatelessWidget {
   final ProjectData project;
@@ -13,12 +14,10 @@ class ProjectDetailFiles extends StatelessWidget {
     return StreamBuilder(
       stream: project.getFilesAsStream(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (!snapshot.hasData) {
-          return Text("Ingen Filer");
-        }
-
-        if (snapshot.hasData && snapshot.data.documents.length == 0) {
-          return Text("Ingen Filer");
+        if ((!snapshot.hasData) || snapshot.hasData && snapshot.data.documents.length == 0) {
+          return NoData(
+            text: "Ingen filer",
+          );
         }
 
         return ListView.builder(

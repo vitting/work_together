@@ -9,10 +9,11 @@ class UserData {
   String email;
   String name;
   String photoUrl;
+  String photoFileName;
   bool enabled;
   bool admin;
 
-  UserData({this.id, @required this.email, @required this.name, this.photoUrl, this.admin = false, this.enabled = true});
+  UserData({this.id, @required this.email, @required this.name, this.photoUrl, this.photoFileName, this.admin = false, this.enabled = true});
 
   Future<void> save() {
     if (id == null) {
@@ -38,6 +39,7 @@ class UserData {
       "email": email,
       "name": name,
       "photoUrl": photoUrl,
+      "photoFileName": photoFileName,
       "enabled": enabled,
       "admin": admin
     };
@@ -49,17 +51,21 @@ class UserData {
       email: item["email"],
       name: item["name"],
       photoUrl: item["photoUrl"],
+      photoFileName: item["photoFileName"],
       enabled: item["enabled"],
       admin: item["admin"]
     );
   }
 
   static Future<UserData> initUser(FirebaseUser user) async {
+    List<String> photo = user.photoUrl.split("|");
+    print(photo);
     UserData userData = UserData(
       id: user.uid,
       name: user.displayName,
       email: user.email,
-      photoUrl: user.photoUrl ?? Config.noProfilePicture
+      photoFileName: photo[0],
+      photoUrl: photo[1]
     );
 
     await UserFirestore.add(userData, merge: true);

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:work_together/helpers/task_data.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
-import 'package:work_together/ui/widgets/dialog_color_widget.dart';
-import 'package:work_together/ui/widgets/dot_button_widget.dart';
+import 'package:work_together/ui/widgets/round_button_widget.dart';
 
 class TaskCreate extends StatefulWidget {
   static final String routeName = "taskcreate";
@@ -19,8 +18,6 @@ class TaskCreate extends StatefulWidget {
 
 class TaskCreateState extends State<TaskCreate> {
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
-  Color _dotColor;
-  DialogColors _dialogColors;
   TaskData _task;
   String _pageTitle;
 
@@ -31,12 +28,8 @@ class TaskCreateState extends State<TaskCreate> {
     if (widget.task != null) {
       _pageTitle = "Redigere opgave";
       _task = widget.task;
-      _dialogColors = DialogColorConvert.getDialogColor(_task.color);
-      _dotColor = DialogColorConvert.getColor(_dialogColors);
     } else {
       _pageTitle = "Opret opgave";
-      _dialogColors = DialogColorConvert.getDialogColor(0);
-      _dotColor = DialogColorConvert.getColor(_dialogColors);
       _task = TaskData(projectId: widget.projectId);
     }
   }
@@ -81,35 +74,14 @@ class TaskCreateState extends State<TaskCreate> {
                       _task.description = value.trim();
                     },
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text("Opgave farve"),
-                      DotButton(
-                    size: 50,
-                    color: _dotColor,
-                    dialogColor: _dialogColors,
-                    onTap: (DialogColors color) async {
-                      DialogColors choosenColor =
-                          await _showColorDialog(context);
-                      if (choosenColor != null) {
-                        _task.color =
-                            DialogColorConvert.getColorValue(choosenColor);
-                        setState(() {
-                          _dialogColors = choosenColor;
-                          _dotColor = DialogColorConvert.getColor(choosenColor);
-                        });
-                      }
-                    },
-                  )
-                    ],
-                  ),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10),
                   ),
-                  FlatButton.icon(
-                    icon: Icon(Icons.check),
-                    label: Text("Opret"),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  RoundButton(
+                    text: "Opret",
                     onPressed: () async {
                       if (_form.currentState.validate()) {
                         _form.currentState.save();
@@ -127,13 +99,5 @@ class TaskCreateState extends State<TaskCreate> {
         ),
       ),
     );
-  }
-
-  Future<DialogColors> _showColorDialog(BuildContext context) {
-    return showDialog<DialogColors>(
-        context: context,
-        builder: (BuildContext dialogContext) {
-          return DialogColor();
-        });
   }
 }

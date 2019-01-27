@@ -137,6 +137,7 @@ class _ProjectDetailMainState extends State<ProjectDetailMain> {
 
   void _showCreateCommentDialog(BuildContext context) async {
     String comment = await showDialog<String>(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return DialogCreateComment();
