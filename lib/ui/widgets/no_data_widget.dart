@@ -11,7 +11,9 @@ class NoData extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Container(
-          padding: EdgeInsets.all(10),
+          // padding: EdgeInsets.all(10),
+          width: 200,
+          height: 200,
           decoration:
               BoxDecoration(color: Colors.blueGrey, shape: BoxShape.circle, border: Border.all(
                 color: Colors.blueGrey[600],

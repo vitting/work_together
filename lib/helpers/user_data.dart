@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
-import 'package:work_together/helpers/config.dart';
 import 'package:work_together/helpers/system_helpers.dart';
 import 'package:work_together/helpers/user_firestore.dart';
 

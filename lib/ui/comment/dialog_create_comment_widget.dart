@@ -27,7 +27,7 @@ class DialogCreateCommentState extends State<DialogCreateComment> {
               TextFormField(
                 initialValue: widget.comment,
                 maxLines: 4,
-                maxLength: 500,
+                maxLength: 1000,
                 onSaved: (String value) {
                   Navigator.of(context).pop(value);
                 },

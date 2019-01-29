@@ -22,6 +22,8 @@ dependencies:
   cached_network_image: ^0.5.1
   image_picker: ^0.5.0
   validate: ^1.7.0
+  flutter_document_picker: ^1.4.0
+  # open_file: ^1.2.0
   
   flutter:
     sdk: flutter

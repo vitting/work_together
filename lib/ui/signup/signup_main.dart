@@ -316,7 +316,7 @@ class _SignupMainState extends State<SignupMain> {
           _isLoading = false;
           _profileImageFront = _getFrontIcon(FrontImageAction.image);
           _profileImageUrl = url;
-          _profileImageFilename = taskData.filename;
+          _profileImageFilename = taskData.storageFilename;
         });
       } else if (imageFileDialog.action == ImageFileDialogAction.remove) {
         if (_profileImageFilename.isNotEmpty) {
