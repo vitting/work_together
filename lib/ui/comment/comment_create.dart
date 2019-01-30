@@ -15,7 +15,18 @@ class CommentCreate extends StatefulWidget {
 }
 
 class CommentCreateState extends State<CommentCreate> {
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String _buttonText = "Opret";
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.comment != null && widget.comment.isNotEmpty) {
+      _buttonText = "Gem";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +35,7 @@ class CommentCreateState extends State<CommentCreate> {
       ),
       body: Card(
         child: Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: ListView(
               children: <Widget>[
                 Form(
@@ -37,17 +48,15 @@ class CommentCreateState extends State<CommentCreate> {
                       TextFormField(
                           initialValue: widget.comment,
                           maxLines: 5,
-                          maxLength: 1000,
-                          decoration: InputDecoration(
-                            labelText: "Kommentar"
-                          ),
+                          maxLength: 10000,
+                          decoration: InputDecoration(labelText: "Kommentar"),
                           onSaved: (String value) {
                             Navigator.of(context).pop(value);
                           }),
                       Padding(
                         padding: const EdgeInsets.only(top: 20),
                         child: RoundButton(
-                          text: "Opret",
+                          text: _buttonText,
                           onPressed: () {
                             _formKey.currentState.save();
                           },

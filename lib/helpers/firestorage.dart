@@ -61,4 +61,8 @@ class FirebaseStorageHelper {
   static Future<void> deleteFile(String projectId, String filename) {
     return _firebaseStorage.ref().child("projects/$projectId/$filename").delete();
   }
+
+  static Future<void> deleteProjectFiles(String projectId) {
+    return _firebaseStorage.ref().child("projects/$projectId").delete();
+  }
 }

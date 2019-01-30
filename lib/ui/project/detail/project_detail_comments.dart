@@ -1,14 +1,13 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:work_together/helpers/bottom_menu_action_enum.dart';
 import 'package:work_together/helpers/comment_data.dart';
-import 'package:work_together/helpers/date_time_helpers.dart';
 import 'package:work_together/helpers/project_data.dart';
-import 'package:work_together/ui/comment/dialog_create_comment_widget.dart';
+import 'package:work_together/ui/comment/comment_create.dart';
+import 'package:work_together/ui/comment/comment_detail.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
+import 'package:work_together/ui/widgets/comment_row_widget.dart';
 import 'package:work_together/ui/widgets/no_data_widget.dart';
-import 'package:work_together/ui/widgets/title_row_icon_widget.dart';
 
 class ProjectDetailComments extends StatelessWidget {
   final ProjectData project;
@@ -34,44 +33,30 @@ class ProjectDetailComments extends StatelessWidget {
           itemBuilder: (BuildContext context, int position) {
             DocumentSnapshot doc = snapshot.data.documents[position];
             CommentData comment = CommentData.fromMap(doc.data);
-
-            return Card(
-              child: ListTile(
-                title: TitleRowIcon(
-                  onTapMenu: (_) async {
-                    _bottomMenuAction(context, await _showBottomMenu(context), comment);
-                  },
-                  leading: CircleAvatar(
-                    backgroundImage: CachedNetworkImageProvider(comment.photoUrl),
-                  ),
-                  title: comment.name,
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(comment.comment,
-                        maxLines: 2, overflow: TextOverflow.ellipsis),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5),
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: Icon(Icons.calendar_today, size: 10),
-                        ),
-                        Text(DateTimeHelpers.ddmmyyyyHHnn(comment.commentDate),
-                            style: TextStyle(fontSize: 12))
-                      ],
-                    )
-                  ],
-                ),
-              ),
+            return CommentRow(
+              comment: comment,
+              onTapDescription: (_) {
+                _gotoCommentDetail(context, comment);
+              },
+              onTapComment: (_) {
+                _gotoCommentDetail(context, comment);
+              },
+              onTapMenu: (_) async {
+                _bottomMenuAction(
+                    context, await _showBottomMenu(context), comment);
+              },
             );
           },
         );
       },
     );
+  }
+
+  void _gotoCommentDetail(BuildContext context, CommentData comment) {
+    Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => CommentDetail(
+                          comment: comment,
+                        )));
   }
 
   Future<BottomMenuAction> _showBottomMenu(BuildContext context) {
@@ -106,11 +91,10 @@ class ProjectDetailComments extends StatelessWidget {
       switch (action) {
         case BottomMenuAction.edit:
           String comment = await showDialog<String>(
-            context: context,
-            builder: (BuildContext dialogContext) => DialogCreateComment(
-              comment: item.comment,
-            )
-          );
+              context: context,
+              builder: (BuildContext dialogContext) => CommentCreate(
+                    comment: item.comment,
+                  ));
 
           if (comment != null && comment.isNotEmpty) {
             MainInherited.of(context).showProgressLayer(true);

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:work_together/ui/login/login_main.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
 import 'package:work_together/ui/project/project_main.dart';
-import 'package:work_together/ui/widgets/loader_progress_widet.dart';
 
 class Home extends StatefulWidget {
   @override

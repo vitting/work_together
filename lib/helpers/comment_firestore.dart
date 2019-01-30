@@ -49,4 +49,13 @@ class CommentFirestore {
         .orderBy("commentDate")
         .snapshots();
   }
+
+  static Stream<QuerySnapshot> getSubCommentsBySubCommentId(
+      String subCommentId) {
+    return _firestore
+        .collection(_collectionName)
+        .where("subCommentId", isEqualTo: subCommentId)
+        .orderBy("commentDate")
+        .snapshots();
+  }
 }

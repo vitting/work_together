@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:work_together/helpers/task_data.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
+import 'package:work_together/ui/widgets/dot_icon_widget.dart';
 import 'package:work_together/ui/widgets/round_button_widget.dart';
 
 class TaskCreate extends StatefulWidget {
@@ -44,6 +46,12 @@ class TaskCreateState extends State<TaskCreate> {
         padding: EdgeInsets.all(10),
         child: ListView(
           children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: DotIcon(
+                icon: FontAwesomeIcons.tasks,
+              ),
+            ),
             Form(
               key: _form,
               child: Column(

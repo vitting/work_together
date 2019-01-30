@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:work_together/helpers/comment_firestore.dart';
 import 'package:work_together/helpers/system_helpers.dart';
+import 'package:work_together/helpers/user_data.dart';
 
 class CommentData {
   String id;
+  String subCommentId;
   String projectId;
   String taskId;
 
@@ -18,6 +20,7 @@ class CommentData {
 
   CommentData(
       {this.id,
+      this.subCommentId,
       @required this.projectId,
       this.taskId,
       @required this.type,
@@ -30,6 +33,7 @@ class CommentData {
   Map<String, dynamic> toMap() {
     return {
       "id": id,
+      "subCommentId": subCommentId,
       "projectId": projectId,
       "taskId": taskId,
       "type": type,
@@ -56,9 +60,14 @@ class CommentData {
     return CommentFirestore.delete(id);
   }
 
+  Stream<QuerySnapshot> getSubComments() {
+    return CommentFirestore.getSubCommentsBySubCommentId(id);
+  }
+
   factory CommentData.fromMap(dynamic item) {
     return CommentData(
         id: item["id"],
+        subCommentId: item["subCommentId"],
         projectId: item["projectId"],
         taskId: item["taskId"],
         type: item["type"],
@@ -67,6 +76,19 @@ class CommentData {
         photoUrl: item["photoUrl"],
         comment: item["comment"],
         commentDate: (item["commentDate"] as Timestamp).toDate());
+  }
+
+  factory CommentData.subComment(CommentData commentData, String comment, UserData user) {
+    return CommentData(
+      projectId: commentData.projectId,
+      taskId: commentData.taskId,
+      type: commentData.type,
+      comment: comment,
+      name: user.name,
+      userId: user.id,
+      photoUrl: user.photoUrl,
+      subCommentId: commentData.id
+    );
   }
 
   static Stream<QuerySnapshot> getCommentsByProjectId(String projectId) {
