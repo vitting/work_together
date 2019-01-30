@@ -10,6 +10,7 @@ import 'package:work_together/ui/file/file_create.dart';
 
 class FileData {
   String id;
+  DateTime creationDate;
   String projectId;
   String taskId;
   String userId;
@@ -24,11 +25,12 @@ class FileData {
   int fileSize;
   String downloadUrl;
 
-  FileData({this.id, this.projectId, this.taskId = "", this.userId, this.name, this.photoUrl, this.type, @required this.storageFilename, @required this.originalFilename, this.description = "", @required this.extension, @required this.downloadUrl, @required this.fileSize});
+  FileData({this.id, this.creationDate, this.projectId, this.taskId = "", this.userId, this.name, this.photoUrl, this.type, @required this.storageFilename, @required this.originalFilename, this.description = "", @required this.extension, @required this.downloadUrl, @required this.fileSize});
 
   Map<String, dynamic> toMap() {
     return {
       "id": id,
+      "creationDate": Timestamp.fromDate(creationDate),
       "projectId": projectId,
       "taskId": taskId,
       "userId": userId,
@@ -45,16 +47,19 @@ class FileData {
   }
 
   Future<void> save() {
+    creationDate = creationDate ?? DateTime.now();
     return FileFirestore.add(this);
   }
 
-  Future<void> delete() {
+  Future<void> delete() async {
+    await FirebaseStorageHelper.deleteFile(projectId, storageFilename);
     return FileFirestore.delete(id);
   }
 
   factory FileData.fromMap(Map<String, dynamic> item) {
     return FileData(
       id: item["id"],
+      creationDate: (item["creationDate"] as Timestamp).toDate(),
       projectId: item["projectId"],
       taskId: item["taskId"],
       userId: item["userId"],

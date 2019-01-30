@@ -53,7 +53,8 @@ class ProjectData extends ItemData {
   }
 
   Future<void> delete() {
-    return ProjectFirestore.delete(this.id);
+    /// TODO: We have to delete tasks, comments, files
+    return ProjectFirestore.delete(id);
   }
 
 

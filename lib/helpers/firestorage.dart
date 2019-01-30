@@ -51,7 +51,7 @@ class FirebaseStorageHelper {
     return StorageUploadTaskData(
         task: _firebaseStorage
             .ref()
-            .child("$projectId/$uid.$extension")
+            .child("projects/$projectId/$uid.$extension")
             .putFile(file, meta),
         storageFilename: "$uid.$extension",
         extension: extension,
@@ -59,6 +59,6 @@ class FirebaseStorageHelper {
   }
 
   static Future<void> deleteFile(String projectId, String filename) {
-    return _firebaseStorage.ref().child("$projectId/$filename").delete();
+    return _firebaseStorage.ref().child("projects/$projectId/$filename").delete();
   }
 }

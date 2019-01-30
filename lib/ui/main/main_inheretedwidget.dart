@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:work_together/helpers/user_auth.dart';
@@ -21,6 +23,7 @@ class MainInherited extends StatefulWidget {
 }
 
 class MainInheritedState extends State<MainInherited> {
+  final StreamController<bool> _streamController = StreamController<bool>.broadcast();
   bool canVibrate;
   String systemLanguageCode = "da";
   UserData userData;
@@ -47,10 +50,24 @@ class MainInheritedState extends State<MainInherited> {
     });
   }
 
+  @override
+  void dispose() {
+    _streamController.close();
+    super.dispose();
+  }
+
   void logout() async {
     setState(() {
       isLoggedIn = false;
     });
+  }
+
+  Stream get loaderProgressStream {
+    return _streamController.stream;
+  }
+
+  void showProgressLayer(bool show) {
+    _streamController.add(show);
   }
 
   @override

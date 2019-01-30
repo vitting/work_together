@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart';
 import 'package:work_together/helpers/config.dart';
+import 'package:work_together/helpers/file_data.dart';
+import 'package:work_together/ui/widgets/dot_icon_widget.dart';
 import 'package:work_together/ui/widgets/round_button_widget.dart';
 
 class FileCreateData {
@@ -14,25 +17,34 @@ class FileCreateData {
 
 class FileCreate extends StatefulWidget {
   final String path;
+  final FileData fileData;
 
-  const FileCreate({Key key, this.path}) : super(key: key);
+  const FileCreate({Key key, this.path, this.fileData}) : super(key: key);
   @override
   _FileCreateState createState() => _FileCreateState();
 }
 
 class _FileCreateState extends State<FileCreate> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  FileCreateData _fileData;
+  FileCreateData _fileCreateData;
   @override
   void initState() {
     super.initState();
-    String filename = basenameWithoutExtension(widget.path);
-    String fileExtension =
-        extension(widget.path).replaceAll(".", "").toLowerCase();
-    _fileData =
-        FileCreateData(name: filename, extension: fileExtension, comment: "");
+    if (widget.fileData == null) {
+      String filename = basenameWithoutExtension(widget.path);
+      String fileExtension =
+          extension(widget.path).replaceAll(".", "").toLowerCase();
+      _fileCreateData =
+          FileCreateData(name: filename, extension: fileExtension, comment: "");
+    } else {
+      _fileCreateData = FileCreateData(
+        name: widget.fileData.originalFilename,
+        comment: widget.fileData.description,
+        extension: widget.fileData.extension
+      );
+    }
   }
-
+//TODO: If image show it
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,24 +59,23 @@ class _FileCreateState extends State<FileCreate> {
             child: ListView(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  padding: const EdgeInsets.only(bottom: 20),
                   child: Column(
                     children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(Config.getFileIcon(_fileData.extension), size: 40)
-                        ],
+                      Config.isImage(_fileCreateData.extension) ? DotIcon(
+                        imagePath: widget.path ?? widget.fileData.downloadUrl,
+                      ) : DotIcon(
+                        icon: Config.getFileIcon(_fileCreateData.extension),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[Text(_fileData.extension)],
+                        children: <Widget>[Text(_fileCreateData.extension)],
                       )
                     ],
                   ),
                 ),
                 TextFormField(
-                  initialValue: _fileData.name,
+                  initialValue: _fileCreateData.name,
                   maxLength: 100,
                   decoration: InputDecoration(labelText: "Fil navn"),
                   validator: (String value) {
@@ -73,16 +84,16 @@ class _FileCreateState extends State<FileCreate> {
                     }
                   },
                   onSaved: (String value) {
-                    _fileData.name = value.trim();
+                    _fileCreateData.name = value.trim();
                   },
                 ),
                 TextFormField(
-                  initialValue: _fileData.comment,
+                  initialValue: _fileCreateData.comment,
                   maxLength: 1000,
                   maxLines: 4,
                   decoration: InputDecoration(labelText: "Kommentar"),
                   onSaved: (String value) {
-                    _fileData.comment = value.trim();
+                    _fileCreateData.comment = value.trim();
                   },
                 ),
                 Padding(
@@ -95,7 +106,7 @@ class _FileCreateState extends State<FileCreate> {
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
                             _formKey.currentState.save();
-                            Navigator.of(context).pop(_fileData);
+                            Navigator.of(context).pop(_fileCreateData);
                           }
                         },
                       ),

@@ -20,7 +20,11 @@ class ProjectDetailTasks extends StatelessWidget {
     return StreamBuilder(
       stream: project.getTasksAsStream(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if ((!snapshot.hasData) || (snapshot.hasData && snapshot.data.documents.length == 0)) {
+        if (!snapshot.hasData) {
+          return Container();
+        }
+
+        if (snapshot.hasData && snapshot.data.documents.length == 0) {
           return NoData(
             text: "Ingen Opgaver",
           );

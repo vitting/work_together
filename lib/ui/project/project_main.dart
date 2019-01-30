@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:work_together/helpers/bottom_menu_action_enum.dart';
 import 'package:work_together/helpers/date_time_helpers.dart';
 import 'package:work_together/helpers/project_data.dart';
+import 'package:work_together/ui/main/main_inheretedwidget.dart';
 import 'package:work_together/ui/project/detail/project_detail_main.dart';
 import 'package:work_together/ui/project/project_create.dart';
 import 'package:work_together/ui/widgets/dialog_color_widget.dart';
 import 'package:work_together/ui/widgets/drawer_widget.dart';
+import 'package:work_together/ui/widgets/loader_progress_widet.dart';
+import 'package:work_together/ui/widgets/no_data_widget.dart';
 import 'package:work_together/ui/widgets/title_row_widget.dart';
 
 class ProjectMain extends StatelessWidget {
@@ -14,24 +17,31 @@ class ProjectMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        drawer: DrawerWidget(),
-        appBar: AppBar(
-          title: Text("Projekter")
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            Navigator.of(context).pushNamed(ProjectCreate.routeName);
-          },
-          child: Icon(Icons.add),
-        ),
-        body: StreamBuilder(
-          stream: ProjectData.getProjectsAsStream(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (!snapshot.hasData) {
-              return Container();
-            } else {
+    return LoaderProgress(
+      showStream: MainInherited.of(context).loaderProgressStream,
+      child: Scaffold(
+          drawer: DrawerWidget(),
+          appBar: AppBar(title: Text("Projekter")),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () async {
+              Navigator.of(context).pushNamed(ProjectCreate.routeName);
+            },
+            child: Icon(Icons.add),
+          ),
+          body: StreamBuilder(
+            stream: ProjectData.getProjectsAsStream(),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (!snapshot.hasData) {
+                return Container();
+              }
+
+              if (snapshot.hasData && snapshot.data.documents.length == 0) {
+                return NoData(
+                  text: "Ingen Projekter",
+                );
+              }
+
               return Container(
                 child: ListView.builder(
                   itemCount: snapshot.data.documents.length,
@@ -42,13 +52,16 @@ class ProjectMain extends StatelessWidget {
                       child: ListTile(
                         title: TitleRow(
                           title: projectItem.title,
-                          dotColor: DialogColorConvert.getDialogColor(projectItem.color),
+                          dotColor: DialogColorConvert.getDialogColor(
+                              projectItem.color),
                           onTapMenu: (_) async {
-                            _showBottomMenuAction(context, await _showBottomMenu(context), projectItem);
+                            _bottomMenuAction(context,
+                                await _showBottomMenu(context), projectItem);
                           },
                           onTapColor: (DialogColors color) {
                             if (color != null) {
-                              projectItem.updateColor(DialogColorConvert.getColorValue(color));
+                              projectItem.updateColor(
+                                  DialogColorConvert.getColorValue(color));
                             }
                           },
                         ),
@@ -80,8 +93,7 @@ class ProjectMain extends StatelessWidget {
                                       padding: const EdgeInsets.only(right: 5),
                                       child: Icon(Icons.comment, size: 14),
                                     ),
-                                    Text("25",
-                                        style: TextStyle(fontSize: 12)),
+                                    Text("25", style: TextStyle(fontSize: 12)),
                                   ],
                                 ),
                                 Row(
@@ -100,19 +112,19 @@ class ProjectMain extends StatelessWidget {
                         ),
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) => ProjectDetailMain(
-                              project: projectItem,
-                            )
-                          ));
+                              builder: (BuildContext context) =>
+                                  ProjectDetailMain(
+                                    project: projectItem,
+                                  )));
                         },
                       ),
                     );
                   },
                 ),
               );
-            }
-          },
-        ));
+            },
+          )),
+    );
   }
 
   Future<BottomMenuAction> _showBottomMenu(BuildContext context) {
@@ -141,14 +153,17 @@ class ProjectMain extends StatelessWidget {
         });
   }
 
-  void _showBottomMenuAction(
-      BuildContext context, BottomMenuAction action, ProjectData item) {
+  void _bottomMenuAction(
+      BuildContext context, BottomMenuAction action, ProjectData item) async {
     switch (action) {
       case BottomMenuAction.edit:
         Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => ProjectCreate(project: item)));
         break;
       case BottomMenuAction.delete:
+        MainInherited.of(context).showProgressLayer(true);
+        await item.delete();
+        MainInherited.of(context).showProgressLayer(false);
         break;
     }
   }

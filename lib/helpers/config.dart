@@ -13,6 +13,7 @@ class Config {
   static final Color drawerIconColor = Colors.blue[700];
   static final List<String> allowedFileExtensions = [
     "jpg",
+    "JPG",
     "jpeg",
     "png",
     "bmp",
@@ -25,8 +26,47 @@ class Config {
     "pptx",
     "xls",
     "xlsx",
-    "mp4"
+    "mp4",
+    "JPEG",
+    "PNG",
+    "BMP",
+    "WEBP",
+    "GIF",
+    "PDF",
+    "DOC",
+    "DOCX",
+    "PPT",
+    "PPTX",
+    "XLS",
+    "XLSX",
+    "MP4"
   ];
+
+  static bool isImage(String extension) {
+    bool value = false;
+    switch (extension) {
+      case "jpg":
+        value = true;
+        break;
+      case "jpg":
+        value = true;
+        break;
+      case "png":
+        value = true;
+        break;
+      case "gif":
+        value = true;
+        break;
+      case "bmp":
+        value = true;
+        break;
+      case "webp":
+        value = true;
+        break;
+    }
+
+    return value;
+  }
 
   static IconData getFileIcon(String extension) {
     IconData icon;

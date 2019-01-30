@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:work_together/ui/comment/comment_create.dart';
 import 'package:work_together/ui/home/home.dart';
 import 'package:work_together/ui/login/login_main.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
@@ -23,7 +24,8 @@ void main() async {
         ProjectMain.routeName: (BuildContext context) => ProjectMain(),
         ProjectCreate.routeName: (BuildContext context) => ProjectCreate(),
         TaskCreate.routeName: (BuildContext context) => TaskCreate(),
-        SignupMain.routeName: (BuildContext context) => SignupMain()
+        SignupMain.routeName: (BuildContext context) => SignupMain(),
+        CommentCreate.routeName: (BuildContext context) => CommentCreate()
       },
     ),
   ));
