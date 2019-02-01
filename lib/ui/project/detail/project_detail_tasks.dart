@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:work_together/helpers/bottom_menu_action_enum.dart';
 import 'package:work_together/helpers/project_data.dart';
 import 'package:work_together/helpers/task_data.dart';
@@ -12,7 +13,7 @@ class ProjectDetailTasks extends StatelessWidget {
   static final String routeName = "projectdetailtasks";
 
   final ProjectData project;
-
+  
   const ProjectDetailTasks({Key key, this.project}) : super(key: key);
 
   @override
@@ -27,6 +28,7 @@ class ProjectDetailTasks extends StatelessWidget {
         if (snapshot.hasData && snapshot.data.documents.length == 0) {
           return NoData(
             text: "Ingen Opgaver",
+            icon: FontAwesomeIcons.tasks,
           );
         }
 

@@ -67,11 +67,19 @@ class ProjectData extends ItemData {
   }
 
   Stream<QuerySnapshot> getCommentsAsStream() {
-    return CommentData.getCommentsByProjectId(id);
+    return CommentData.getCommentsByProjectIdAsStream(id);
   }
 
   Stream<QuerySnapshot> getFilesAsStream() {
+    return FileData.getFilesByProjectIdAsStream(id);
+  }
+
+  Future<List<FileData>> getFiles() {
     return FileData.getFilesByProjectId(id);
+  }
+
+  Future<List<CommentData>> getComments() {
+    return CommentData.getCommentsByProjectId(id);
   }
 
   factory ProjectData.fromMap(Map<String, dynamic> item) {
@@ -88,7 +96,7 @@ class ProjectData extends ItemData {
         color: item["color"]);
   }
 
-  static Stream<QuerySnapshot> getProjectsAsStream() {
-    return ProjectFirestore.getAllProjectsAsStream();
+  static Stream<QuerySnapshot> getProjectsAsStream(String userId) {
+    return ProjectFirestore.getProjectsByUserIdAsStream(userId);
   }
 }

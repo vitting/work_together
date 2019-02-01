@@ -9,14 +9,20 @@ import 'package:work_together/ui/widgets/title_row_icon_widget.dart';
 class FileRow extends StatelessWidget {
   final FileData file;
   final ValueChanged<bool> onTapMenu;
+  final ValueChanged<FileData> onTapRow;
 
-  const FileRow({Key key, @required this.file, @required this.onTapMenu})
+  const FileRow({Key key, @required this.file, this.onTapMenu, this.onTapRow})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
         contentPadding: EdgeInsets.all(5),
+        onTap: () {
+          if (onTapRow != null) {
+            onTapRow(file);
+          }
+        },
         title: TitleRowIcon(
           leading: _getIconImage(file),
           title: "${file.originalFilename}.${file.extension}",
@@ -76,14 +82,17 @@ class FileRow extends StatelessWidget {
 
   dynamic _getIconImage(FileData file) {
     if (Config.isImage(file.extension)) {
-      return Container(
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(4),
+        child: CachedNetworkImage(
+          imageUrl: file.downloadUrl,
           width: 40,
           height: 40,
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: CachedNetworkImageProvider(file.downloadUrl)),
-              borderRadius: BorderRadius.circular(4)));
+          fit: BoxFit.cover,
+          errorWidget: Icon(Icons.image, size: 40, color: Colors.blue[700]),
+          placeholder: Icon(Icons.image, size: 40, color: Colors.blue[700]),
+        ),
+      );
     } else {
       return Container(
         padding: EdgeInsets.all(5),

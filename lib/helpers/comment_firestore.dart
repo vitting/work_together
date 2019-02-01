@@ -23,7 +23,16 @@ class CommentFirestore {
     return _firestore.collection(_collectionName).document(id).delete();
   }
 
-  static Stream<QuerySnapshot> getCommentsByProjectId(String projectId) {
+static Future<QuerySnapshot> getCommentsByProjectId(String projectId) {
+    return _firestore
+        .collection(_collectionName)
+        .where("projectId", isEqualTo: projectId)
+        .where("type", isEqualTo: "p")
+        .orderBy("commentDate")
+        .getDocuments();
+  }
+
+  static Stream<QuerySnapshot> getCommentsByProjectIdAsStream(String projectId) {
     return _firestore
         .collection(_collectionName)
         .where("projectId", isEqualTo: projectId)

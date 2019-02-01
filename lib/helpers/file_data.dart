@@ -75,12 +75,19 @@ class FileData {
     );
   }
 
-  static Stream<QuerySnapshot> getFilesByProjectId(String projectId) {
-    return FileFirestore.getFilesByProjectId(projectId);
+  static Future<List<FileData>> getFilesByProjectId(String projectId) async {
+    QuerySnapshot snapshot = await FileFirestore.getFilesByProjectId(projectId);
+    return snapshot.documents.map<FileData>((DocumentSnapshot doc) {
+      return FileData.fromMap(doc.data);
+    }).toList();
   }
 
-  static Stream<QuerySnapshot> getFilesByTaskId(String taskId) {
-    return FileFirestore.getFilesByTaskId(taskId);
+  static Stream<QuerySnapshot> getFilesByProjectIdAsStream(String projectId) {
+    return FileFirestore.getFilesByProjectIdAsStream(projectId);
+  }
+
+  static Stream<QuerySnapshot> getFilesByTaskIdAsStream(String taskId) {
+    return FileFirestore.getFilesByTaskIdAsStream(taskId);
   }
 
   static Future<FileData> uploadFile(String projectId, UserData userData, File file, FileCreateData fileCreateData) async {

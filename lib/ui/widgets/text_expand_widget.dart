@@ -19,6 +19,7 @@ class _TextExpandState extends State<TextExpand> {
   @override
   void initState() {
     super.initState();
+    
     if (widget.showExpanded) {
       _maxLines = null;
       _overflow = null;

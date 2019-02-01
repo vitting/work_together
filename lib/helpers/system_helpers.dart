@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
+import 'package:random_string/random_string.dart';
 
 class SystemHelpers {
   static void hideKeyboardWithNoFocus(BuildContext context) {
@@ -50,5 +51,9 @@ class SystemHelpers {
   static String generateUuid() {
     Uuid _uuid = new Uuid();
     return _uuid.v4().toString();
+  }
+
+  static String generateRandomUsername(String text) {
+    return "${text.replaceAll(" ", "")}_${randomAlpha(2).toLowerCase()}${randomNumeric(2)}${randomAlpha(2).toLowerCase()}${randomNumeric(2)}";
   }
 }

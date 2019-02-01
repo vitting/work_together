@@ -10,6 +10,10 @@ import 'package:work_together/ui/signup/signup_main.dart';
 import 'package:work_together/ui/task/task_create.dart';
 import 'package:work_together/ui/test.dart';
 
+/// TODO: Signup to a group, you have to be accepted by group owner
+/// TODO: Signup and create a new group, where you are the owner
+/// TODO: If i want to join a another group you have to be accepted from the group owner
+
 void main() async {
   final Firestore firestore = Firestore.instance;
   await firestore.settings(timestampsInSnapshotsEnabled: true);
@@ -20,6 +24,7 @@ void main() async {
       routes: <String, WidgetBuilder>{
         "/": (BuildContext context) => Home(),
         // "/": (BuildContext context) => TestWidget(),
+        // "/": (BuildContext context) => GroupMain(),
         LoginMain.routeName: (BuildContext context) => LoginMain(),
         ProjectMain.routeName: (BuildContext context) => ProjectMain(),
         ProjectCreate.routeName: (BuildContext context) => ProjectCreate(),

@@ -13,10 +13,13 @@ import 'package:work_together/ui/project/detail/project_detail_comments.dart';
 import 'package:work_together/ui/project/detail/project_detail_files.dart';
 import 'package:work_together/ui/project/detail/project_detail_overview.dart';
 import 'package:work_together/ui/project/detail/project_detail_tasks.dart';
+import 'package:work_together/ui/project/search/search_functions.dart';
 import 'package:work_together/ui/task/task_create.dart';
 import 'package:work_together/ui/widgets/bottom_navigation_bar_widget.dart';
 import 'package:work_together/ui/widgets/loader_progress_widet.dart';
 import 'package:work_together/ui/widgets/round_button_widget.dart';
+
+enum ProjectDetailType { dashboard, tasks, comments, files }
 
 class ProjectDetailMain extends StatefulWidget {
   static final String routeName = "projectdetailmain";
@@ -29,7 +32,7 @@ class ProjectDetailMain extends StatefulWidget {
 }
 
 class _ProjectDetailMainState extends State<ProjectDetailMain> {
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   List<Widget> _pages;
   int _page = 0;
   String _pageTitle = "";
@@ -63,6 +66,17 @@ class _ProjectDetailMainState extends State<ProjectDetailMain> {
               });
             }),
         appBar: AppBar(
+          actions: _page == 0
+              ? null
+              : <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () {
+                      showProjectSearch(
+                          context, widget.project, _getPageType(_page));
+                    },
+                  )
+                ],
           title: Text(_pageTitle),
         ),
         floatingActionButton: _getFloatingActionButton(context, _page),
@@ -217,10 +231,9 @@ class _ProjectDetailMainState extends State<ProjectDetailMain> {
 
   void _showCreateCommentDialog(BuildContext context) async {
     String comment = await Navigator.of(context).push(MaterialPageRoute(
-      fullscreenDialog: true,
-      builder: (BuildContext pageContext) => CommentCreate()
-    ));
-    
+        fullscreenDialog: true,
+        builder: (BuildContext pageContext) => CommentCreate()));
+
     if (comment != null && comment.isNotEmpty) {
       CommentData commentData = CommentData(
           comment: comment,
@@ -233,11 +246,31 @@ class _ProjectDetailMainState extends State<ProjectDetailMain> {
       try {
         MainInherited.of(context).showProgressLayer(true);
         await commentData.save();
-        MainInherited.of(context).showProgressLayer(false);  
+        MainInherited.of(context).showProgressLayer(false);
       } catch (e) {
         MainInherited.of(context).showProgressLayer(false);
         print(e);
       }
     }
+  }
+
+  ProjectDetailType _getPageType(int page) {
+    ProjectDetailType result;
+    switch (page) {
+      case 0:
+        result = ProjectDetailType.dashboard;
+        break;
+      case 1:
+        result = ProjectDetailType.tasks;
+        break;
+      case 2:
+        result = ProjectDetailType.comments;
+        break;
+      case 3:
+        result = ProjectDetailType.files;
+        break;
+    }
+
+    return result;
   }
 }

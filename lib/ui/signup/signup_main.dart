@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:validate/validate.dart';
 import 'package:work_together/helpers/config.dart';
 import 'package:work_together/helpers/firestorage.dart';
+import 'package:work_together/helpers/system_helpers.dart';
 import 'package:work_together/helpers/user_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:work_together/helpers/validator_helper.dart';
@@ -190,10 +191,11 @@ class _SignupMainState extends State<SignupMain> {
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
-                      String profileImage = Config.noProfilePictureFilename + "|" + Config.noProfilePicture;
+                      String uniqueName = SystemHelpers.generateRandomUsername(_nameController.text);
+                      String profileImage = uniqueName + "|" + Config.noProfilePictureFilename + "|" + Config.noProfilePicture;
 
                       if (_profileImageUrl.isNotEmpty) {
-                        profileImage = _profileImageFilename + "|" + _profileImageUrl;
+                        profileImage = uniqueName + "|" + _profileImageFilename + "|" + _profileImageUrl;
                       }
 
                       FirebaseUser user = await UserAuth.createUser(

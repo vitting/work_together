@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:work_together/helpers/comment_data.dart';
 import 'package:work_together/helpers/system_helpers.dart';
 import 'package:work_together/helpers/user_data.dart';
+import 'package:work_together/ui/comment/comment_row_widget.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
-import 'package:work_together/ui/widgets/comment_row_widget.dart';
 import 'package:work_together/ui/widgets/loader_progress_widet.dart';
 import 'package:work_together/ui/widgets/textfield_with_border_widget.dart';
 
@@ -65,7 +65,7 @@ class CommentDetailState extends State<CommentDetail> {
                       }
                     }),
                 StreamBuilder(
-                  stream: widget.comment.getSubComments(),
+                  stream: widget.comment.getSubCommentsAsStream(),
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (!snapshot.hasData ||

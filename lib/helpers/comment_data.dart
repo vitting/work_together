@@ -60,8 +60,15 @@ class CommentData {
     return CommentFirestore.delete(id);
   }
 
-  Stream<QuerySnapshot> getSubComments() {
+  Stream<QuerySnapshot> getSubCommentsAsStream() {
     return CommentFirestore.getSubCommentsBySubCommentId(id);
+  }
+
+  static Future<List<CommentData>> getCommentsByProjectId(String projectId) async {
+    QuerySnapshot snapshot = await CommentFirestore.getCommentsByProjectId(projectId);
+    return snapshot.documents.map<CommentData>((DocumentSnapshot doc) {
+      return CommentData.fromMap(doc.data);
+    }).toList();
   }
 
   factory CommentData.fromMap(dynamic item) {
@@ -91,8 +98,8 @@ class CommentData {
     );
   }
 
-  static Stream<QuerySnapshot> getCommentsByProjectId(String projectId) {
-    return CommentFirestore.getCommentsByProjectId(projectId);
+  static Stream<QuerySnapshot> getCommentsByProjectIdAsStream(String projectId) {
+    return CommentFirestore.getCommentsByProjectIdAsStream(projectId);
   }
 
   static Stream<QuerySnapshot> getCommentsByTaskId(String taskId) {

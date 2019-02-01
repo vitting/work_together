@@ -5,8 +5,8 @@ import 'package:work_together/helpers/comment_data.dart';
 import 'package:work_together/helpers/project_data.dart';
 import 'package:work_together/ui/comment/comment_create.dart';
 import 'package:work_together/ui/comment/comment_detail.dart';
+import 'package:work_together/ui/comment/comment_row_widget.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
-import 'package:work_together/ui/widgets/comment_row_widget.dart';
 import 'package:work_together/ui/widgets/no_data_widget.dart';
 
 class ProjectDetailComments extends StatelessWidget {
@@ -25,6 +25,7 @@ class ProjectDetailComments extends StatelessWidget {
         if (snapshot.hasData && snapshot.data.documents.length == 0) {
           return NoData(
             text: "Ingen kommentar",
+            icon: Icons.comment,
           );
         }
 
@@ -38,7 +39,7 @@ class ProjectDetailComments extends StatelessWidget {
               onTapDescription: (_) {
                 _gotoCommentDetail(context, comment);
               },
-              onTapComment: (_) {
+              onTapRow: (_) {
                 _gotoCommentDetail(context, comment);
               },
               onTapMenu: (_) async {

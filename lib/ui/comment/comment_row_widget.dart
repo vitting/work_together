@@ -8,21 +8,21 @@ import 'package:work_together/ui/widgets/title_row_icon_widget.dart';
 class CommentRow extends StatelessWidget {
   final CommentData comment;
   final ValueChanged<bool> onTapMenu;
-  final ValueChanged<bool> onTapComment;
+  final ValueChanged<CommentData> onTapRow;
   final ValueChanged<bool> onTapDescription;
   final bool showExpanded;
   final Color backgroundColor;
   final Color textColor;
 
-  const CommentRow({Key key, this.comment, this.onTapMenu, this.onTapComment, this.showExpanded = false, this.backgroundColor = Colors.white, this.textColor = Colors.black, this.onTapDescription}) : super(key: key);
+  const CommentRow({Key key, this.comment, this.onTapMenu, this.onTapRow, this.showExpanded = false, this.backgroundColor = Colors.white, this.textColor = Colors.black, this.onTapDescription}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Card(
       color: backgroundColor,
       child: ListTile(
         onTap: () {
-          if (onTapComment != null) {
-            onTapComment(true);
+          if (onTapRow != null) {
+            onTapRow(comment);
           }
         },
         title: TitleRowIcon(

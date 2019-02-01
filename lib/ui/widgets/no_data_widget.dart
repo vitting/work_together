@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class NoData extends StatelessWidget {
   final String text;
+  final IconData icon;
 
-  const NoData({Key key, this.text}) : super(key: key);
+  const NoData({Key key, this.text,this.icon}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -11,18 +12,24 @@ class NoData extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Container(
-          // padding: EdgeInsets.all(10),
-          width: 200,
-          height: 200,
-          decoration:
-              BoxDecoration(color: Colors.blueGrey, shape: BoxShape.circle, border: Border.all(
-                color: Colors.blueGrey[600],
-                width: 10
-              )),
-          child: Center(
-              child: Text(text,
-                  style: TextStyle(fontSize: 16, color: Colors.white))),
-        ),
+            width: 200,
+            height: 200,
+            decoration: BoxDecoration(
+                color: Colors.blueGrey,
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.blueGrey[600], width: 10)),
+            child: Stack(
+              children: <Widget>[
+                Positioned(
+                  child: Center(child: Icon(icon, size: 70, color: Colors.blueGrey[700])),
+                ),
+                Positioned(
+                    child: Center(
+                        child: Text(text,
+                            style:
+                                TextStyle(fontSize: 16, color: Colors.white)))),
+              ],
+            )),
       ],
     );
   }

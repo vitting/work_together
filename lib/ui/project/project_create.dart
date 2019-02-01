@@ -86,7 +86,7 @@ class ProjectCreateState extends State<ProjectCreate> {
                         _project.updatedByUserId =
                             MainInherited.of(context).userData.id;
                         MainInherited.of(context).showProgressLayer(true);
-                        await _project.save();
+                        await _project. save();
                         MainInherited.of(context).showProgressLayer(false);
                         Navigator.of(context).pop();
                       }

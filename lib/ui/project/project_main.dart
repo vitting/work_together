@@ -1,16 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:work_together/helpers/bottom_menu_action_enum.dart';
-import 'package:work_together/helpers/date_time_helpers.dart';
 import 'package:work_together/helpers/project_data.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
 import 'package:work_together/ui/project/detail/project_detail_main.dart';
 import 'package:work_together/ui/project/project_create.dart';
+import 'package:work_together/ui/project/project_row_widget.dart';
 import 'package:work_together/ui/widgets/dialog_color_widget.dart';
 import 'package:work_together/ui/widgets/drawer_widget.dart';
 import 'package:work_together/ui/widgets/loader_progress_widet.dart';
 import 'package:work_together/ui/widgets/no_data_widget.dart';
-import 'package:work_together/ui/widgets/title_row_widget.dart';
 
 class ProjectMain extends StatelessWidget {
   static final String routeName = "projectmain";
@@ -23,13 +22,14 @@ class ProjectMain extends StatelessWidget {
           drawer: DrawerWidget(),
           appBar: AppBar(title: Text("Projekter")),
           floatingActionButton: FloatingActionButton(
+            tooltip: "Opret nyt projekt",
             onPressed: () async {
               Navigator.of(context).pushNamed(ProjectCreate.routeName);
             },
             child: Icon(Icons.add),
           ),
           body: StreamBuilder(
-            stream: ProjectData.getProjectsAsStream(),
+            stream: MainInherited.of(context, false).userData.getProjects(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData) {
@@ -37,9 +37,10 @@ class ProjectMain extends StatelessWidget {
               }
 
               if (snapshot.hasData && snapshot.data.documents.length == 0) {
-                return NoData(
+                return Center(
+                    child: NoData(
                   text: "Ingen Projekter",
-                );
+                ));
               }
 
               return Container(
@@ -48,76 +49,26 @@ class ProjectMain extends StatelessWidget {
                   itemBuilder: (BuildContext context, int position) {
                     ProjectData projectItem = ProjectData.fromMap(
                         snapshot.data.documents[position].data);
-                    return Card(
-                      child: ListTile(
-                        title: TitleRow(
-                          title: projectItem.title,
-                          dotColor: DialogColorConvert.getDialogColor(
-                              projectItem.color),
-                          onTapMenu: (_) async {
-                            _bottomMenuAction(context,
-                                await _showBottomMenu(context), projectItem);
-                          },
-                          onTapColor: (DialogColors color) {
-                            if (color != null) {
-                              projectItem.updateColor(
-                                  DialogColorConvert.getColorValue(color));
-                            }
-                          },
-                        ),
-                        subtitle: Column(
-                          children: <Widget>[
-                            Text(projectItem.description,
-                                maxLines: 1, overflow: TextOverflow.ellipsis),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 5),
-                                      child: Icon(Icons.access_time, size: 14),
-                                    ),
-                                    Text(
-                                        DateTimeHelpers.ddmmyyyy(
-                                            projectItem.createdDate),
-                                        style: TextStyle(fontSize: 12))
-                                  ],
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 5),
-                                      child: Icon(Icons.comment, size: 14),
-                                    ),
-                                    Text("25", style: TextStyle(fontSize: 12)),
-                                  ],
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 5),
-                                      child: Icon(Icons.person, size: 14),
-                                    ),
-                                    Text("Christian Nicolaisen",
-                                        style: TextStyle(fontSize: 12)),
-                                  ],
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  ProjectDetailMain(
-                                    project: projectItem,
-                                  )));
-                        },
-                      ),
+
+                    return ProjectRow(
+                      project: projectItem,
+                      onTapMenu: (_) async {
+                        _bottomMenuAction(context,
+                            await _showBottomMenu(context), projectItem);
+                      },
+                      onTapColor: (DialogColors color) {
+                        if (color != null) {
+                          projectItem.updateColor(
+                              DialogColorConvert.getColorValue(color));
+                        }
+                      },
+                      onTap: (ProjectData project) {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                ProjectDetailMain(
+                                  project: project,
+                                )));
+                      },
                     );
                   },
                 ),

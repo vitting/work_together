@@ -27,7 +27,7 @@ class ProjectFirestore {
     return _firestore.collection(_collectionName).orderBy("title").getDocuments();
   }
 
-  static Stream<QuerySnapshot> getAllProjectsAsStream() {
-    return _firestore.collection(_collectionName).orderBy("title").snapshots();
+  static Stream<QuerySnapshot> getProjectsByUserIdAsStream(String userId) {
+    return _firestore.collection(_collectionName).where("createdByUserId", isEqualTo: userId).orderBy("title").snapshots();
   }
 }

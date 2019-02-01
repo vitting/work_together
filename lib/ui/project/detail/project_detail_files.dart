@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:work_together/helpers/bottom_menu_action_enum.dart';
 import 'package:work_together/helpers/file_data.dart';
 import 'package:work_together/helpers/project_data.dart';
 import 'package:work_together/ui/file/file_create.dart';
+import 'package:work_together/ui/file/file_row_widget.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
-import 'package:work_together/ui/widgets/file_row_widget.dart';
 import 'package:work_together/ui/widgets/no_data_widget.dart';
 
 class ProjectDetailFiles extends StatelessWidget {
@@ -24,10 +25,9 @@ class ProjectDetailFiles extends StatelessWidget {
         if (snapshot.hasData && snapshot.data.documents.length == 0) {
           return NoData(
             text: "Ingen filer",
+            icon: FontAwesomeIcons.file,
           );
         }
-
-        // TODO: Info om dato og Person der uploaded billedet, med mulighed for at trykke og se userdata info
 
         return ListView.builder(
           itemCount: snapshot.data.documents.length,
@@ -101,3 +101,5 @@ class ProjectDetailFiles extends StatelessWidget {
     }
   }
 }
+
+

@@ -17,7 +17,16 @@ class FileFirestore {
     return _firestore.collection(_collectionName).document(id).delete();
   }    
 
-  static Stream<QuerySnapshot> getFilesByProjectId(String projectId) {
+  static Future<QuerySnapshot> getFilesByProjectId(String projectId) {
+    return _firestore
+        .collection(_collectionName)
+        .where("projectId", isEqualTo: projectId)
+        .where("type", isEqualTo: "p")
+        .orderBy("name")
+        .getDocuments();
+  }
+
+  static Stream<QuerySnapshot> getFilesByProjectIdAsStream(String projectId) {
     return _firestore
         .collection(_collectionName)
         .where("projectId", isEqualTo: projectId)
@@ -26,7 +35,7 @@ class FileFirestore {
         .snapshots();
   }
 
-  static Stream<QuerySnapshot> getFilesByTaskId(String taskId) {
+  static Stream<QuerySnapshot> getFilesByTaskIdAsStream(String taskId) {
     return _firestore
         .collection(_collectionName)
         .where("taskId", isEqualTo: taskId)
