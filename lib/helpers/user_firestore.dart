@@ -22,4 +22,8 @@ class UserFirestore {
       "enabled": enabled
     });
   }
+
+  static Future<QuerySnapshot> getAllUsers() {
+    return _firestore.collection(_collectionName).getDocuments();
+  }
 }

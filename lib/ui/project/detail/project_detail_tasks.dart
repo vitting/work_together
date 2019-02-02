@@ -2,18 +2,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:work_together/helpers/bottom_menu_action_enum.dart';
+import 'package:work_together/helpers/config.dart';
 import 'package:work_together/helpers/project_data.dart';
 import 'package:work_together/helpers/task_data.dart';
 import 'package:work_together/ui/task/task_create.dart';
+import 'package:work_together/ui/task/task_row_widget.dart';
+import 'package:work_together/ui/widgets/bottom_sheet_edit_delete_widget.dart';
 import 'package:work_together/ui/widgets/dialog_color_widget.dart';
 import 'package:work_together/ui/widgets/no_data_widget.dart';
-import 'package:work_together/ui/widgets/title_row_widget.dart';
 
 class ProjectDetailTasks extends StatelessWidget {
   static final String routeName = "projectdetailtasks";
 
   final ProjectData project;
-  
+
   const ProjectDetailTasks({Key key, this.project}) : super(key: key);
 
   @override
@@ -38,23 +40,20 @@ class ProjectDetailTasks extends StatelessWidget {
             DocumentSnapshot doc = snapshot.data.documents[position];
             TaskData task = TaskData.fromMap(doc.data);
 
-            return Card(
-              child: ListTile(
-                title: TitleRow(
-                  title: task.title,
-                  dotColor: DialogColorConvert.getDialogColor(task.color),
-                  onTapMenu: (_) async {
-                    _showBottomMenuAction(
-                        context, await _showBottomMenu(context), task);
-                  },
-                  onTapColor: (DialogColors color) {
-                    if (color != null) {
-                      task.updateColor(DialogColorConvert.getColorValue(color));
-                    }
-                  },
-                ),
-                subtitle: Text(task.description),
-              ),
+            return TaskRow(
+              task: task,
+              backgroundColor: DialogColorConvert.getDialogLightColor(task.color),
+              textColor: Config.rowTextColor,
+              onTapColor: (DialogColors color) {
+                if (color != null) {
+                  task.updateColor(DialogColorConvert.getColorValue(color));
+                }
+              },
+              onTapMenu: (_) async {
+                _showBottomMenuAction(
+                    context, await _showBottomMenu(context), task);
+              },
+              onTapRow: (TaskData item) {},
             );
           },
         );
@@ -66,24 +65,12 @@ class ProjectDetailTasks extends StatelessWidget {
     return showModalBottomSheet<BottomMenuAction>(
         context: context,
         builder: (BuildContext dialogContext) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.edit),
-                title: Text("Rediger"),
-                onTap: () {
-                  Navigator.of(dialogContext).pop(BottomMenuAction.edit);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.delete_forever),
-                title: Text("Slet"),
-                onTap: () {
-                  Navigator.of(dialogContext).pop(BottomMenuAction.delete);
-                },
-              )
-            ],
+          return BottomSheetEditDelete(
+            backgroundColor: Config.bottomSheetBackgroundColor,
+            textColor: Config.bottomSheetTextColor,
+            onTap: (BottomMenuAction action) {
+              Navigator.of(dialogContext).pop(action);
+            },
           );
         });
   }

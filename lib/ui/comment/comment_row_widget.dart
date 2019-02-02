@@ -14,7 +14,16 @@ class CommentRow extends StatelessWidget {
   final Color backgroundColor;
   final Color textColor;
 
-  const CommentRow({Key key, this.comment, this.onTapMenu, this.onTapRow, this.showExpanded = false, this.backgroundColor = Colors.white, this.textColor = Colors.black, this.onTapDescription}) : super(key: key);
+  const CommentRow(
+      {Key key,
+      this.comment,
+      this.onTapMenu,
+      this.onTapRow,
+      this.showExpanded = false,
+      this.backgroundColor = Colors.white,
+      this.textColor = Colors.black,
+      this.onTapDescription})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -38,7 +47,11 @@ class CommentRow extends StatelessWidget {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(left: 50, right: 35),
-              child: TextExpand(text: comment.comment, showExpanded: showExpanded, textColor: textColor, onTap: onTapDescription),
+              child: TextExpand(
+                  text: comment.comment,
+                  showExpanded: showExpanded,
+                  textColor: textColor,
+                  onTap: onTapDescription),
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 5),

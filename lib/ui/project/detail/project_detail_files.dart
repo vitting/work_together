@@ -2,11 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:work_together/helpers/bottom_menu_action_enum.dart';
+import 'package:work_together/helpers/config.dart';
 import 'package:work_together/helpers/file_data.dart';
 import 'package:work_together/helpers/project_data.dart';
 import 'package:work_together/ui/file/file_create.dart';
 import 'package:work_together/ui/file/file_row_widget.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
+import 'package:work_together/ui/widgets/bottom_sheet_edit_delete_widget.dart';
+import 'package:work_together/ui/widgets/dialog_color_widget.dart';
 import 'package:work_together/ui/widgets/no_data_widget.dart';
 
 class ProjectDetailFiles extends StatelessWidget {
@@ -35,6 +38,8 @@ class ProjectDetailFiles extends StatelessWidget {
             DocumentSnapshot doc = snapshot.data.documents[position];
             FileData file = FileData.fromMap(doc.data);
             return FileRow(
+              backgroundColor: DialogColorConvert.getDialogLightColor(project.color),
+              textColor: Config.rowTextColor,
               file: file,
               onTapMenu: (_) async {
                 _bottomMenuAction(
@@ -51,24 +56,12 @@ class ProjectDetailFiles extends StatelessWidget {
     return showModalBottomSheet<BottomMenuAction>(
         context: context,
         builder: (BuildContext dialogContext) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.edit),
-                title: Text("Rediger"),
-                onTap: () {
-                  Navigator.of(dialogContext).pop(BottomMenuAction.edit);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.delete_forever),
-                title: Text("Slet"),
-                onTap: () {
-                  Navigator.of(dialogContext).pop(BottomMenuAction.delete);
-                },
-              )
-            ],
+          return BottomSheetEditDelete(
+            backgroundColor: Config.bottomSheetBackgroundColor,
+            textColor: Config.bottomSheetTextColor,
+            onTap: (BottomMenuAction action) {
+              Navigator.of(dialogContext).pop(action);
+            },
           );
         });
   }

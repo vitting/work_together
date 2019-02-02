@@ -4,13 +4,17 @@ import 'package:work_together/ui/comment/comment_row_widget.dart';
 import 'package:work_together/ui/widgets/no_data_widget.dart';
 
 class CommentSearchDelegate extends SearchDelegate<CommentData> {
-  final List<CommentData> items;
+  final List<CommentData> searchItems;
+  final Color textColor;
+  final Color backgroundColor;
   List<CommentData> _selected = [];
-  CommentSearchDelegate(this.items);
+  CommentSearchDelegate(
+      {this.searchItems,
+      this.textColor = Colors.black,
+      this.backgroundColor = Colors.white});
 
   @override
   ThemeData appBarTheme(BuildContext context) {
-    // TODO: implement appBarTheme
     return super.appBarTheme(context);
   }
 
@@ -46,46 +50,26 @@ class CommentSearchDelegate extends SearchDelegate<CommentData> {
   @override
   Widget buildResults(BuildContext context) {
     if (_selected.length == 0) {
-      return Center(
-        child: NoData(
-          text: "Ingen resultater",
-          icon: Icons.comment,
-        ),
-      );
+      return _noResult("Ingen kommentar");
     } else {
-      return ListView.builder(
-        itemCount: _selected.length,
-        itemBuilder: (BuildContext context, int position) {
-          CommentData commentData = _selected[position];
-          return CommentRow(
-            comment: commentData,
-            onTapMenu: null,
-            onTapRow: (CommentData value) {
-              close(context, value);
-            },
-          );
-        },
-      );
+      return _results(_selected);
     }
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    if (items.length == 0) {
-      return Center(
-        child: NoData(
-          text: "Ingen kommentar",
-          icon: Icons.comment,
-        ),
-      );
+    if (searchItems.length == 0) {
+      return _noResult("Ingen kommentar");
     }
     if (query.isEmpty) {
       return ListView.builder(
-        itemCount: items.length,
+        itemCount: searchItems.length,
         itemBuilder: (BuildContext context, int position) {
-          CommentData commentData = items[position];
+          CommentData commentData = searchItems[position];
           return CommentRow(
             comment: commentData,
+            backgroundColor: backgroundColor,
+            textColor: textColor,
             onTapMenu: null,
             onTapRow: (CommentData value) {
               close(context, commentData);
@@ -94,32 +78,42 @@ class CommentSearchDelegate extends SearchDelegate<CommentData> {
         },
       );
     } else {
-      _selected = items.where((CommentData data) {
+      _selected = searchItems.where((CommentData data) {
         return data.comment.toLowerCase().contains(query);
       }).toList();
 
       if (_selected.length == 0) {
-        return Center(
-          child: NoData(
-            text: "Ingen resultater",
-            icon: Icons.comment,
-          ),
-        );
+        return _noResult("Ingen kommentar");
       } else {
-        return ListView.builder(
-          itemCount: _selected.length,
-          itemBuilder: (BuildContext context, int position) {
-            CommentData data = _selected[position];
-            return CommentRow(
-              comment: data,
-              onTapMenu: null,
-              onTapRow: (CommentData value) {
-                close(context, value);
-              },
-            );
-          },
-        );
+        return _results(_selected);
       }
     }
+  }
+
+  Widget _noResult(String text) {
+    return Center(
+      child: NoData(
+        text: text,
+        icon: Icons.comment,
+      ),
+    );
+  }
+
+  Widget _results(List<CommentData> items) {
+    return ListView.builder(
+      itemCount: items.length,
+      itemBuilder: (BuildContext context, int position) {
+        CommentData data = items[position];
+        return CommentRow(
+          comment: data,
+          backgroundColor: backgroundColor,
+          textColor: textColor,
+          onTapMenu: null,
+          onTapRow: (CommentData value) {
+            close(context, value);
+          },
+        );
+      },
+    );
   }
 }

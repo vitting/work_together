@@ -2,11 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:work_together/helpers/bottom_menu_action_enum.dart';
 import 'package:work_together/helpers/comment_data.dart';
+import 'package:work_together/helpers/config.dart';
 import 'package:work_together/helpers/project_data.dart';
 import 'package:work_together/ui/comment/comment_create.dart';
 import 'package:work_together/ui/comment/comment_detail.dart';
 import 'package:work_together/ui/comment/comment_row_widget.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
+import 'package:work_together/ui/widgets/bottom_sheet_edit_delete_widget.dart';
+import 'package:work_together/ui/widgets/dialog_color_widget.dart';
 import 'package:work_together/ui/widgets/no_data_widget.dart';
 
 class ProjectDetailComments extends StatelessWidget {
@@ -36,11 +39,14 @@ class ProjectDetailComments extends StatelessWidget {
             CommentData comment = CommentData.fromMap(doc.data);
             return CommentRow(
               comment: comment,
+              backgroundColor:
+                  DialogColorConvert.getDialogLightColor(project.color),
+              textColor: Config.rowTextColor,
               onTapDescription: (_) {
-                _gotoCommentDetail(context, comment);
+                _gotoCommentDetail(context, comment, project.color);
               },
               onTapRow: (_) {
-                _gotoCommentDetail(context, comment);
+                _gotoCommentDetail(context, comment, project.color);
               },
               onTapMenu: (_) async {
                 _bottomMenuAction(
@@ -53,35 +59,24 @@ class ProjectDetailComments extends StatelessWidget {
     );
   }
 
-  void _gotoCommentDetail(BuildContext context, CommentData comment) {
+  void _gotoCommentDetail(BuildContext context, CommentData comment, int projectColor) {
     Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => CommentDetail(
-                          comment: comment,
-                        )));
+        builder: (BuildContext context) => CommentDetail(
+              comment: comment,
+              projectColor: projectColor,
+            )));
   }
 
   Future<BottomMenuAction> _showBottomMenu(BuildContext context) {
     return showModalBottomSheet<BottomMenuAction>(
         context: context,
         builder: (BuildContext dialogContext) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.edit),
-                title: Text("Rediger"),
-                onTap: () {
-                  Navigator.of(dialogContext).pop(BottomMenuAction.edit);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.delete_forever),
-                title: Text("Slet"),
-                onTap: () {
-                  Navigator.of(dialogContext).pop(BottomMenuAction.delete);
-                },
-              )
-            ],
+          return BottomSheetEditDelete(
+            backgroundColor: Config.bottomSheetBackgroundColor,
+            textColor: Config.bottomSheetTextColor,
+            onTap: (BottomMenuAction action) {
+              Navigator.of(dialogContext).pop(action);
+            },
           );
         });
   }

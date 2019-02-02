@@ -1,17 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:work_together/helpers/comment_data.dart';
+import 'package:work_together/helpers/config.dart';
 import 'package:work_together/helpers/system_helpers.dart';
 import 'package:work_together/helpers/user_data.dart';
 import 'package:work_together/ui/comment/comment_row_widget.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
+import 'package:work_together/ui/widgets/dialog_color_widget.dart';
 import 'package:work_together/ui/widgets/loader_progress_widet.dart';
 import 'package:work_together/ui/widgets/textfield_with_border_widget.dart';
 
 class CommentDetail extends StatefulWidget {
   final CommentData comment;
+  final int projectColor;
 
-  const CommentDetail({Key key, this.comment}) : super(key: key);
+  const CommentDetail({Key key, this.comment, this.projectColor = 0}) : super(key: key);
 
   @override
   CommentDetailState createState() {
@@ -45,15 +48,14 @@ class CommentDetailState extends State<CommentDetail> {
               children: <Widget>[
                 CommentRow(
                   showExpanded: true,
-                  textColor: Colors.white,
-                  backgroundColor: Colors.blue[700],
+                  textColor: Config.rowTextColor,
+                  backgroundColor: DialogColorConvert.getDialogLightColor(widget.projectColor),
                   comment: widget.comment,
                 ),
                 TextFieldWithBorder(
                     controller: _commentController,
-                    label: "Tilføj kommentar",
-                    color: Colors.deepOrange,
-                    maxLength: 10000,
+                    label: "Svar på kommentar",
+                    color: Colors.blueGrey[600],
                     maxLines: 2,
                     onIconButtonPressed: (String value) async {
                       if (value.isNotEmpty) {
@@ -85,7 +87,7 @@ class CommentDetailState extends State<CommentDetail> {
 
                         return CommentRow(
                           textColor: Colors.white,
-                          backgroundColor: Colors.deepOrange,
+                          backgroundColor: Colors.blueGrey[400],
                           showExpanded: true,
                           comment: subComment,
                         );

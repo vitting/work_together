@@ -10,12 +10,21 @@ class FileRow extends StatelessWidget {
   final FileData file;
   final ValueChanged<bool> onTapMenu;
   final ValueChanged<FileData> onTapRow;
+  final Color backgroundColor;
+  final Color textColor;
 
-  const FileRow({Key key, @required this.file, this.onTapMenu, this.onTapRow})
+  const FileRow(
+      {Key key,
+      @required this.file,
+      this.onTapMenu,
+      this.onTapRow,
+      this.backgroundColor = Colors.white,
+      this.textColor = Colors.black})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: backgroundColor,
       child: ListTile(
         contentPadding: EdgeInsets.all(5),
         onTap: () {
@@ -24,6 +33,7 @@ class FileRow extends StatelessWidget {
           }
         },
         title: TitleRowIcon(
+          textColor: textColor,
           leading: _getIconImage(file),
           title: "${file.originalFilename}.${file.extension}",
           onTapMenu: onTapMenu,
@@ -35,7 +45,8 @@ class FileRow extends StatelessWidget {
                 ? Container()
                 : Container(
                     padding: const EdgeInsets.only(left: 50, right: 35),
-                    child: TextExpand(text: file.description)),
+                    child: TextExpand(
+                        text: file.description, textColor: textColor)),
             SizedBox(height: 10),
             Row(
               children: <Widget>[
@@ -45,12 +56,13 @@ class FileRow extends StatelessWidget {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(right: 5),
-                        child: Icon(Icons.calendar_today, size: 12),
+                        child: Icon(Icons.calendar_today,
+                            size: 12, color: textColor),
                       ),
                       Flexible(
                         child: Text(
                             DateTimeHelpers.ddmmyyyyHHnn(file.creationDate),
-                            style: TextStyle(fontSize: 12)),
+                            style: TextStyle(fontSize: 12, color: textColor)),
                       )
                     ],
                   ),
@@ -60,12 +72,12 @@ class FileRow extends StatelessWidget {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(right: 5),
-                        child: Icon(Icons.person, size: 14),
+                        child: Icon(Icons.person, size: 14, color: textColor),
                       ),
                       Expanded(
                         child: InkWell(
-                          child:
-                              Text(file.name, style: TextStyle(fontSize: 12)),
+                          child: Text(file.name,
+                              style: TextStyle(fontSize: 12, color: textColor)),
                           onTap: () {},
                         ),
                       )
@@ -89,14 +101,15 @@ class FileRow extends StatelessWidget {
           width: 40,
           height: 40,
           fit: BoxFit.cover,
-          errorWidget: Icon(Icons.image, size: 40, color: Colors.blue[700]),
-          placeholder: Icon(Icons.image, size: 40, color: Colors.blue[700]),
+          errorWidget: Icon(Icons.image, size: 40, color: textColor),
+          placeholder: Icon(Icons.image, size: 40, color: textColor),
         ),
       );
     } else {
       return Container(
         padding: EdgeInsets.all(5),
-        child: Icon(Config.getFileIcon(file.extension), size: 30),
+        child: Icon(Config.getFileIcon(file.extension),
+            size: 30, color: textColor),
       );
     }
   }

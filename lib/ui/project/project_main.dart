@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:work_together/helpers/bottom_menu_action_enum.dart';
+import 'package:work_together/helpers/config.dart';
 import 'package:work_together/helpers/project_data.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
 import 'package:work_together/ui/project/detail/project_detail_main.dart';
 import 'package:work_together/ui/project/project_create.dart';
 import 'package:work_together/ui/project/project_row_widget.dart';
+import 'package:work_together/ui/widgets/bottom_sheet_edit_delete_widget.dart';
 import 'package:work_together/ui/widgets/dialog_color_widget.dart';
 import 'package:work_together/ui/widgets/drawer_widget.dart';
 import 'package:work_together/ui/widgets/loader_progress_widet.dart';
@@ -23,6 +25,7 @@ class ProjectMain extends StatelessWidget {
           appBar: AppBar(title: Text("Projekter")),
           floatingActionButton: FloatingActionButton(
             tooltip: "Opret nyt projekt",
+            backgroundColor: Config.floatingActionButtonColor,
             onPressed: () async {
               Navigator.of(context).pushNamed(ProjectCreate.routeName);
             },
@@ -51,6 +54,7 @@ class ProjectMain extends StatelessWidget {
                         snapshot.data.documents[position].data);
 
                     return ProjectRow(
+                      backgroundColor: DialogColorConvert.getDialogLightColor(projectItem.color),
                       project: projectItem,
                       onTapMenu: (_) async {
                         _bottomMenuAction(context,
@@ -82,24 +86,12 @@ class ProjectMain extends StatelessWidget {
     return showModalBottomSheet<BottomMenuAction>(
         context: context,
         builder: (BuildContext dialogContext) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.edit),
-                title: Text("Rediger"),
-                onTap: () {
-                  Navigator.of(dialogContext).pop(BottomMenuAction.edit);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.delete_forever),
-                title: Text("Slet"),
-                onTap: () {
-                  Navigator.of(dialogContext).pop(BottomMenuAction.delete);
-                },
-              )
-            ],
+          return BottomSheetEditDelete(
+            backgroundColor: Config.bottomSheetBackgroundColor,
+            textColor: Config.bottomSheetTextColor,
+            onTap: (BottomMenuAction action) {
+              Navigator.of(dialogContext).pop(action);
+            },
           );
         });
   }

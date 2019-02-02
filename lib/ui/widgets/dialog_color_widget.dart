@@ -119,6 +119,41 @@ class DialogColorConvert {
 
     return dialogColor;
   }
+
+  static Color getDialogLightColor(int value) {
+    Color dialogColorLight;
+    switch (value) {
+      case 0:
+        dialogColorLight = Colors.yellow[50];
+        break;
+      case 1:
+        dialogColorLight = Colors.red[50];
+        break;
+      case 2:
+        dialogColorLight = Colors.blue[200];
+        break;
+      case 3:
+        dialogColorLight = Colors.blue[50];
+        break;
+      case 4:
+        dialogColorLight = Colors.orange[50];
+        break;
+      case 5:
+        dialogColorLight = Colors.green[50];
+        break;
+      case 6:
+        dialogColorLight = Colors.purple[50];
+        break;
+      case 7:
+        dialogColorLight = Colors.cyan[50];
+        break;
+      case 8:
+        dialogColorLight = Colors.pink[50];
+      break;
+    }
+
+    return dialogColorLight;
+  }
 }
 
 class DialogColor extends StatelessWidget {

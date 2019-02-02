@@ -28,6 +28,18 @@ class ProjectFirestore {
   }
 
   static Stream<QuerySnapshot> getProjectsByUserIdAsStream(String userId) {
-    return _firestore.collection(_collectionName).where("createdByUserId", isEqualTo: userId).orderBy("title").snapshots();
+    return _firestore.collection(_collectionName).where("participants", arrayContains: userId).orderBy("title").snapshots();
+  }
+
+  static Future<void> addParticipant(String id, String userId) {
+    return _firestore.collection(_collectionName).document(id).updateData({
+      "participants": FieldValue.arrayUnion([userId])
+    });
+  }
+
+  static Future<void> removeParticipant(String id, String userId) {
+    return _firestore.collection(_collectionName).document(id).updateData({
+      "participants": FieldValue.arrayRemove([userId])
+    });
   }
 }

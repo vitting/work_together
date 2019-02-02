@@ -42,7 +42,7 @@ class _FileCreateState extends State<FileCreate> {
       );
     }
   }
-//TODO: If image show it
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

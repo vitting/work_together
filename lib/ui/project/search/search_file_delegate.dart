@@ -5,13 +5,17 @@ import 'package:work_together/ui/file/file_row_widget.dart';
 import 'package:work_together/ui/widgets/no_data_widget.dart';
 
 class FileSearchDelegate extends SearchDelegate<FileData> {
-  final List<FileData> items;
+  final List<FileData> searchItems;
+  final Color textColor;
+  final Color backgroundColor;
   List<FileData> _selected = [];
-  FileSearchDelegate(this.items);
+  FileSearchDelegate(
+      {this.searchItems,
+      this.textColor = Colors.black,
+      this.backgroundColor = Colors.white});
 
   @override
   ThemeData appBarTheme(BuildContext context) {
-    // TODO: implement appBarTheme
     return super.appBarTheme(context);
   }
 
@@ -47,19 +51,26 @@ class FileSearchDelegate extends SearchDelegate<FileData> {
   @override
   Widget buildResults(BuildContext context) {
     if (_selected.length == 0) {
-      return Center(
-        child: NoData(
-          text: "Ingen resultater",
-          icon: FontAwesomeIcons.file,
-        ),
-      );
+      return _noResult("Ingen filer");
     } else {
+      return _results(_selected);
+    }
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    if (searchItems.length == 0) {
+      return _noResult("Ingen filer");
+    }
+    if (query.isEmpty) {
       return ListView.builder(
-        itemCount: _selected.length,
+        itemCount: searchItems.length,
         itemBuilder: (BuildContext context, int position) {
-          FileData fileData = _selected[position];
+          FileData fileData = searchItems[position];
           return FileRow(
             file: fileData,
+            backgroundColor: backgroundColor,
+            textColor: textColor,
             onTapMenu: null,
             onTapRow: (FileData value) {
               close(context, value);
@@ -67,61 +78,44 @@ class FileSearchDelegate extends SearchDelegate<FileData> {
           );
         },
       );
-    }
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    if (items.length == 0) {
-      return Center(
-        child: NoData(
-          text: "Ingen filer",
-          icon: FontAwesomeIcons.file,
-        ),
-      );
-    }
-    if (query.isEmpty) {
-      return ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (BuildContext context, int position) {
-          FileData fileData = items[position];
-          return FileRow(
-            file: fileData,
-            onTapMenu: null,
-            onTapRow: (FileData value) {
-              close(context, fileData);
-            },
-          );
-        },
-      );
     } else {
-      _selected = items.where((FileData data) {
+      _selected = searchItems.where((FileData data) {
         return data.originalFilename.toLowerCase().contains(query) ||
             data.description.toLowerCase().contains(query);
       }).toList();
 
       if (_selected.length == 0) {
-        return Center(
-          child: NoData(
-            text: "Ingen resultater",
-            icon: FontAwesomeIcons.file,
-          ),
-        );
+        return _noResult("Ingen filer");
       } else {
-        return ListView.builder(
-          itemCount: _selected.length,
-          itemBuilder: (BuildContext context, int position) {
-            FileData fileData = _selected[position];
-            return FileRow(
-              file: fileData,
-              onTapMenu: null,
-              onTapRow: (FileData value) {
-                close(context, value);
-              },
-            );
-          },
-        );
+        return _results(_selected);
       }
     }
+  }
+
+  Widget _noResult(String text) {
+    return Center(
+      child: NoData(
+        text: text,
+        icon: FontAwesomeIcons.file,
+      ),
+    );
+  }
+
+  Widget _results(List<FileData> items) {
+    return ListView.builder(
+      itemCount: items.length,
+      itemBuilder: (BuildContext context, int position) {
+        FileData fileData = items[position];
+        return FileRow(
+          file: fileData,
+          backgroundColor: backgroundColor,
+          textColor: textColor,
+          onTapMenu: null,
+          onTapRow: (FileData value) {
+            close(context, value);
+          },
+        );
+      },
+    );
   }
 }

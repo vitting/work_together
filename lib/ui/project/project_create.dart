@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:work_together/helpers/project_data.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
+import 'package:work_together/ui/widgets/dot_icon_widget.dart';
 import 'package:work_together/ui/widgets/loader_progress_widet.dart';
 import 'package:work_together/ui/widgets/round_button_widget.dart';
 
@@ -50,10 +53,13 @@ class ProjectCreateState extends State<ProjectCreate> {
             key: _formKey,
             child: ListView(
               children: <Widget>[
+                DotIcon(
+                  icon: FontAwesomeIcons.projectDiagram,
+                ),
                 TextFormField(
                   initialValue: _project.title,
                   // autofocus: true,
-                  maxLength: 100,
+                  inputFormatters: [LengthLimitingTextInputFormatter(200)],
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(labelText: "Titel"),
                   validator: (String value) {
@@ -67,7 +73,7 @@ class ProjectCreateState extends State<ProjectCreate> {
                 ),
                 TextFormField(
                   initialValue: _project.description,
-                  maxLength: 1000,
+                  inputFormatters: [LengthLimitingTextInputFormatter(2000)],
                   maxLines: 10,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(labelText: "Beskrivelse"),

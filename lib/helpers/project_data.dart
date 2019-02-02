@@ -8,6 +8,8 @@ import 'package:work_together/helpers/system_helpers.dart';
 import 'package:work_together/helpers/task_data.dart';
 
 class ProjectData extends ItemData {
+  List<String> participants;
+
   ProjectData(
       {String id,
       String createdByUserId,
@@ -18,7 +20,8 @@ class ProjectData extends ItemData {
       DateTime updatedDate,
       int progress = 0,
       int numberOfSub = 0,
-      int color = 0})
+      int color = 0,
+      this.participants})
       : super(
             id: id,
             createdByUserId: createdByUserId,
@@ -31,16 +34,33 @@ class ProjectData extends ItemData {
             numberOfSub: numberOfSub,
             color: color);
 
+  @override
+  Map<String, dynamic> toMap() {
+    return super.toMap()
+      ..addAll({
+        "participants": participants,
+      });
+  }
+
   Future<void> save() {
     if (id == null) {
       id = SystemHelpers.generateUuid();
       createdDate = DateTime.now();
       updatedDate = createdDate;
       createdByUserId = updatedByUserId;
+      participants = [createdByUserId];
       return ProjectFirestore.add(this);
     } else {
       return ProjectFirestore.update(this);
     }
+  }
+
+  Future<void> addParticipant(String userId) {
+    return ProjectFirestore.addParticipant(id, userId);
+  }
+
+  Future<void> removeParticipant(String userId) {
+    return ProjectFirestore.removeParticipant(id, userId);
   }
 
   Future<void> updateColor(int color) {
@@ -56,7 +76,6 @@ class ProjectData extends ItemData {
     /// TODO: We have to delete tasks, comments, files
     return ProjectFirestore.delete(id);
   }
-
 
   Stream<QuerySnapshot> getTasksAsStream() {
     return TaskData.getTasksAsStream(id);
@@ -93,7 +112,10 @@ class ProjectData extends ItemData {
         description: item["description"],
         progress: item["progress"],
         numberOfSub: item["numberOfSub"],
-        color: item["color"]);
+        color: item["color"],
+        participants: (item["participants"] as List<dynamic>)
+            .map((dynamic item) => (item as String))
+            .toList());
   }
 
   static Stream<QuerySnapshot> getProjectsAsStream(String userId) {

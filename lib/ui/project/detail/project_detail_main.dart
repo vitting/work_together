@@ -126,6 +126,7 @@ class _ProjectDetailMainState extends State<ProjectDetailMain> {
       case 1:
         floatingActionButton = FloatingActionButton(
           tooltip: "Tilføj ny opgave",
+          backgroundColor: Config.floatingActionButtonColor,
           child: Icon(Icons.add),
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
@@ -139,6 +140,7 @@ class _ProjectDetailMainState extends State<ProjectDetailMain> {
       case 2:
         floatingActionButton = FloatingActionButton(
           tooltip: "Tilføj kommentar",
+          backgroundColor: Config.floatingActionButtonColor,
           child: Icon(Icons.add_comment),
           onPressed: () {
             _showCreateCommentDialog(context);
@@ -148,6 +150,7 @@ class _ProjectDetailMainState extends State<ProjectDetailMain> {
       case 3:
         floatingActionButton = FloatingActionButton(
           tooltip: "Tilføj fil",
+          backgroundColor: Config.floatingActionButtonColor,
           child: Icon(Icons.file_upload),
           onPressed: () {
             _showUploadFileDialog(context);

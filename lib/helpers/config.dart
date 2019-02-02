@@ -11,6 +11,11 @@ class Config {
   static final String noProfilePictureWhiteAsset =
       "assets/images/blank_profile_picture_white_transparent_250x250.png";
   static final Color drawerIconColor = Colors.blue[700];
+  static final Color floatingActionButtonColor = Colors.blueGrey[600];
+  static final Color rowBackgroundColor = Colors.blue[800];
+  static final Color rowTextColor = Colors.black;
+  static final Color bottomSheetBackgroundColor = Colors.blueGrey[800];
+  static final Color bottomSheetTextColor = Colors.white;
   static final List<String> allowedFileExtensions = [
     "jpg",
     "JPG",

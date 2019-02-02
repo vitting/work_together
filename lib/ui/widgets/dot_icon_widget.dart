@@ -7,22 +7,24 @@ class DotIcon extends StatelessWidget {
   final IconData icon;
   final EdgeInsetsGeometry margin;
   final String imagePath;
-  const DotIcon({Key key, this.icon, this.margin, this.imagePath}) : super(key: key);
+  final double size;
+  final double iconSize;
+  const DotIcon({Key key, this.icon, this.margin, this.imagePath, this.size = 80, this.iconSize = 35}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return icon != null ? Container(
       margin: margin,
-      child: Icon(icon, color: Colors.white, size: 35),
-      width: 80,
-      height: 80,
+      child: Icon(icon, color: Colors.white, size: iconSize),
+      width: size,
+      height: size,
       decoration: BoxDecoration(
         color: Colors.blue[700], 
         shape: BoxShape.circle
       )
     ) : Container(
       margin: margin,
-      width: 80,
-      height: 80,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
         color: Colors.blue[700], 
         shape: BoxShape.circle,

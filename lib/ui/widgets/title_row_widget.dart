@@ -7,8 +7,9 @@ class TitleRow extends StatelessWidget {
   final ValueChanged<bool> onTapMenu;
   final ValueChanged<DialogColors> onTapColor;
   final DialogColors dotColor;
+  final Color textColor;
 
-  const TitleRow({Key key, this.title, this.onTapMenu, this.onTapColor, this.dotColor}) : super(key: key);
+  const TitleRow({Key key, this.title, this.onTapMenu, this.onTapColor, this.dotColor, this.textColor = Colors.white}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -27,15 +28,15 @@ class TitleRow extends StatelessWidget {
             },
           ),
         ),
-        Expanded(child: Text(title)),
-        IconButton(
-          icon: Icon(Icons.more_vert),
+        Expanded(child: Text(title, style: TextStyle(color: textColor))),
+        onTapMenu != null ? IconButton(
+          icon: Icon(Icons.more_vert, color: textColor),
           onPressed: () {
             if (onTapMenu != null) {
               onTapMenu(false);
             }
           },
-        )
+        ) : Container()
       ],
     );
   }
