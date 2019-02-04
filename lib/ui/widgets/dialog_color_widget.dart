@@ -11,7 +11,7 @@ enum DialogColors {
   green,
   purple,
   cyan,
-  pink 
+  pink
 }
 
 class DialogColorConvert {
@@ -19,7 +19,7 @@ class DialogColorConvert {
     Color value;
     switch (color) {
       case DialogColors.yellow:
-        value = Colors.yellow;
+        value = Colors.yellow[600];
         break;
       case DialogColors.red:
         value = Colors.red[800];
@@ -43,8 +43,8 @@ class DialogColorConvert {
         value = Colors.cyan;
         break;
       case DialogColors.pink:
-      value = Colors.pink[300];
-      break;
+        value = Colors.pink[300];
+        break;
     }
 
     return value;
@@ -78,8 +78,8 @@ class DialogColorConvert {
         value = 7;
         break;
       case DialogColors.pink:
-      value = 8;
-      break;
+        value = 8;
+        break;
     }
 
     return value;
@@ -114,7 +114,7 @@ class DialogColorConvert {
         break;
       case 8:
         dialogColor = DialogColors.pink;
-      break;
+        break;
     }
 
     return dialogColor;
@@ -149,10 +149,45 @@ class DialogColorConvert {
         break;
       case 8:
         dialogColorLight = Colors.pink[50];
-      break;
+        break;
     }
 
     return dialogColorLight;
+  }
+
+  static Color getDialogTextColor(int value) {
+    Color dialogColorText;
+    switch (value) {
+      case 0:
+        dialogColorText = Colors.blueGrey[800];
+        break;
+      case 1:
+        dialogColorText = Colors.white;
+        break;
+      case 2:
+        dialogColorText = Colors.white;
+        break;
+      case 3:
+        dialogColorText = Colors.white;
+        break;
+      case 4:
+        dialogColorText = Colors.white;
+        break;
+      case 5:
+        dialogColorText = Colors.white;
+        break;
+      case 6:
+        dialogColorText = Colors.white;
+        break;
+      case 7:
+        dialogColorText = Colors.white;
+        break;
+      case 8:
+        dialogColorText = Colors.white;
+        break;
+    }
+
+    return dialogColorText;
   }
 }
 
@@ -169,65 +204,65 @@ class DialogColor extends StatelessWidget {
           childAspectRatio: 1,
           children: <Widget>[
             DotButton(
-              color: Colors.yellow,
+              color: DialogColorConvert.getColor(DialogColors.yellow),
               dialogColor: DialogColors.yellow,
-              onTap: (color) {
+              onTap: (DialogColors color) {
                 Navigator.of(context).pop(color);
               },
             ),
             DotButton(
-              color: Colors.red[800],
+              color: DialogColorConvert.getColor(DialogColors.red),
               dialogColor: DialogColors.red,
-              onTap: (color) {
+              onTap: (DialogColors color) {
                 Navigator.of(context).pop(color);
               },
             ),
             DotButton(
-              color: Colors.blue[900],
+              color: DialogColorConvert.getColor(DialogColors.darkBlue),
               dialogColor: DialogColors.darkBlue,
-              onTap: (color) {
+              onTap: (DialogColors color) {
                 Navigator.of(context).pop(color);
               },
             ),
             DotButton(
-              color: Colors.blue,
+              color: DialogColorConvert.getColor(DialogColors.blue),
               dialogColor: DialogColors.blue,
-              onTap: (color) {
+              onTap: (DialogColors color) {
                 Navigator.of(context).pop(color);
               },
             ),
             DotButton(
-              color: Colors.orange,
+              color: DialogColorConvert.getColor(DialogColors.orange),
               dialogColor: DialogColors.orange,
-              onTap: (color) {
+              onTap: (DialogColors color) {
                 Navigator.of(context).pop(color);
               },
             ),
             DotButton(
-              color: Colors.green,
+              color: DialogColorConvert.getColor(DialogColors.green),
               dialogColor: DialogColors.green,
-              onTap: (color) {
+              onTap: (DialogColors color) {
                 Navigator.of(context).pop(color);
               },
             ),
             DotButton(
-              color: Colors.purple,
+              color: DialogColorConvert.getColor(DialogColors.purple),
               dialogColor: DialogColors.purple,
-              onTap: (color) {
+              onTap: (DialogColors color) {
                 Navigator.of(context).pop(color);
               },
             ),
             DotButton(
-              color: Colors.cyanAccent,
+              color: DialogColorConvert.getColor(DialogColors.cyan),
               dialogColor: DialogColors.cyan,
-              onTap: (color) {
+              onTap: (DialogColors color) {
                 Navigator.of(context).pop(color);
               },
             ),
             DotButton(
-              color: Colors.pink[300],
+              color: DialogColorConvert.getColor(DialogColors.pink),
               dialogColor: DialogColors.pink,
-              onTap: (color) {
+              onTap: (DialogColors color) {
                 Navigator.of(context).pop(color);
               },
             ),

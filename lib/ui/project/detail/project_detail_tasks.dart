@@ -80,7 +80,7 @@ class ProjectDetailTasks extends StatelessWidget {
     switch (action) {
       case BottomMenuAction.edit:
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => TaskCreate(task: item)));
+            builder: (BuildContext context) => TaskCreate(task: item, project: project)));
         break;
       case BottomMenuAction.delete:
         break;

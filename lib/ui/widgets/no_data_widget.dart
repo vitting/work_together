@@ -27,7 +27,7 @@ class NoData extends StatelessWidget {
                     child: Center(
                         child: Text(text,
                             style:
-                                TextStyle(fontSize: 16, color: Colors.white)))),
+                                TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white)))),
               ],
             )),
       ],

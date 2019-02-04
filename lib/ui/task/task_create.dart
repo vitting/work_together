@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:work_together/helpers/project_data.dart';
 import 'package:work_together/helpers/task_data.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
+import 'package:work_together/ui/widgets/dialog_color_widget.dart';
 import 'package:work_together/ui/widgets/dot_icon_widget.dart';
 import 'package:work_together/ui/widgets/round_button_widget.dart';
 
 class TaskCreate extends StatefulWidget {
   static final String routeName = "taskcreate";
   final TaskData task;
-  final String projectId;
+  final ProjectData project;
 
-  const TaskCreate({Key key, this.task, this.projectId}) : super(key: key);
+  const TaskCreate({Key key, this.task, this.project}) : super(key: key);
 
   @override
   TaskCreateState createState() {
@@ -22,17 +24,19 @@ class TaskCreateState extends State<TaskCreate> {
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
   TaskData _task;
   String _pageTitle;
+  Color _backgroundColor;
 
   @override
   void initState() {
     super.initState();
 
+    _backgroundColor = DialogColorConvert.getColor(DialogColorConvert.getDialogColor(widget.project.color));
     if (widget.task != null) {
       _pageTitle = "Redigere opgave";
       _task = widget.task;
     } else {
       _pageTitle = "Opret opgave";
-      _task = TaskData(projectId: widget.projectId);
+      _task = TaskData(projectId: widget.project.id);
     }
   }
 
@@ -40,6 +44,7 @@ class TaskCreateState extends State<TaskCreate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: _backgroundColor,
         title: Text(_pageTitle),
       ),
       body: Container(
@@ -49,6 +54,7 @@ class TaskCreateState extends State<TaskCreate> {
             Padding(
               padding: const EdgeInsets.only(bottom: 20),
               child: DotIcon(
+                backgroundColor: _backgroundColor,
                 icon: FontAwesomeIcons.tasks,
               ),
             ),
@@ -90,6 +96,7 @@ class TaskCreateState extends State<TaskCreate> {
                   ),
                   RoundButton(
                     text: "Opret",
+                    backgroundColor: _backgroundColor,
                     onPressed: () async {
                       if (_form.currentState.validate()) {
                         _form.currentState.save();

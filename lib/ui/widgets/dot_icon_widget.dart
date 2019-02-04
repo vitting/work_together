@@ -9,16 +9,18 @@ class DotIcon extends StatelessWidget {
   final String imagePath;
   final double size;
   final double iconSize;
-  const DotIcon({Key key, this.icon, this.margin, this.imagePath, this.size = 80, this.iconSize = 35}) : super(key: key);
+  final Color backgroundColor;
+  final Color iconColor;
+  const DotIcon({Key key, this.icon, this.margin, this.imagePath, this.size = 80, this.iconSize = 35, this.backgroundColor, this.iconColor = Colors.white}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return icon != null ? Container(
       margin: margin,
-      child: Icon(icon, color: Colors.white, size: iconSize),
+      child: Icon(icon, color: iconColor, size: iconSize),
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: Colors.blue[700], 
+        color: backgroundColor ?? Colors.blue[700], 
         shape: BoxShape.circle
       )
     ) : Container(
@@ -26,7 +28,7 @@ class DotIcon extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: Colors.blue[700], 
+        color: backgroundColor ?? Colors.blue[700], 
         shape: BoxShape.circle,
         image: DecorationImage(
           fit: BoxFit.cover,

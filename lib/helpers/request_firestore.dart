@@ -30,7 +30,7 @@ class RequestFirestore {
   }
 
   /// User want's status on projects who has reqeusted user to join project
-  static Future<QuerySnapshot> getProjectRequestsForUser(String userId) {
+  static Future<QuerySnapshot> getProjectInvitesForUser(String userId) {
     return _firestore
         .collection(_collectionName)
         .where("requestFrom", isEqualTo: "project")
@@ -48,7 +48,7 @@ class RequestFirestore {
   }
 
   /// Project owner want's status on users he has asked to join project
-  static Future<QuerySnapshot> getProjectRequestStatusForUsers(
+  static Future<QuerySnapshot> getProjectInviteStatusForUsers(
       String projectId) {
     return _firestore
         .collection(_collectionName)

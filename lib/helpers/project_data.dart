@@ -9,6 +9,7 @@ import 'package:work_together/helpers/task_data.dart';
 
 class ProjectData extends ItemData {
   List<String> participants;
+  List<String> participantsWaiting;
 
   ProjectData(
       {String id,
@@ -21,6 +22,7 @@ class ProjectData extends ItemData {
       int progress = 0,
       int numberOfSub = 0,
       int color = 0,
+      this.participantsWaiting,
       this.participants})
       : super(
             id: id,
@@ -39,6 +41,7 @@ class ProjectData extends ItemData {
     return super.toMap()
       ..addAll({
         "participants": participants,
+        "participantsWaiting": participantsWaiting
       });
   }
 
@@ -49,6 +52,7 @@ class ProjectData extends ItemData {
       updatedDate = createdDate;
       createdByUserId = updatedByUserId;
       participants = [createdByUserId];
+      participantsWaiting = [];
       return ProjectFirestore.add(this);
     } else {
       return ProjectFirestore.update(this);
@@ -61,6 +65,14 @@ class ProjectData extends ItemData {
 
   Future<void> removeParticipant(String userId) {
     return ProjectFirestore.removeParticipant(id, userId);
+  }
+
+  Future<void> addWaitingParticipant(String userId) {
+    return ProjectFirestore.addWaitingParticipant(id, userId);
+  }
+
+  Future<void> removeWaitingParticipant(String userId) {
+    return ProjectFirestore.removeWaitingParticipant(id, userId);
   }
 
   Future<void> updateColor(int color) {
@@ -113,6 +125,9 @@ class ProjectData extends ItemData {
         progress: item["progress"],
         numberOfSub: item["numberOfSub"],
         color: item["color"],
+        participantsWaiting: (item["participantsWaiting"] as List<dynamic>)
+            .map((dynamic item) => (item as String))
+            .toList(),
         participants: (item["participants"] as List<dynamic>)
             .map((dynamic item) => (item as String))
             .toList());
@@ -120,5 +135,12 @@ class ProjectData extends ItemData {
 
   static Stream<QuerySnapshot> getProjectsAsStream(String userId) {
     return ProjectFirestore.getProjectsByUserIdAsStream(userId);
+  }
+
+  static Future<List<ProjectData>> getProjectsWaitingForUserAccept(String userId) async {
+    QuerySnapshot snapshot = await ProjectFirestore.getProjectsWaitingForUserAccept(userId);
+    return snapshot.documents.map<ProjectData>((DocumentSnapshot doc) {
+      return ProjectData.fromMap(doc.data);
+    }).toList();
   }
 }

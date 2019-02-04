@@ -13,9 +13,11 @@ import 'package:work_together/ui/project/detail/project_detail_comments.dart';
 import 'package:work_together/ui/project/detail/project_detail_files.dart';
 import 'package:work_together/ui/project/detail/project_detail_overview.dart';
 import 'package:work_together/ui/project/detail/project_detail_tasks.dart';
+import 'package:work_together/ui/project/drawer/project_drawer_widget.dart';
 import 'package:work_together/ui/project/search/search_functions.dart';
 import 'package:work_together/ui/task/task_create.dart';
 import 'package:work_together/ui/widgets/bottom_navigation_bar_widget.dart';
+import 'package:work_together/ui/widgets/dialog_color_widget.dart';
 import 'package:work_together/ui/widgets/loader_progress_widet.dart';
 import 'package:work_together/ui/widgets/round_button_widget.dart';
 
@@ -58,6 +60,7 @@ class _ProjectDetailMainState extends State<ProjectDetailMain> {
       showStream: MainInherited.of(context).loaderProgressStream,
       child: Scaffold(
         bottomNavigationBar: BottomNavigationBarWidget(
+          project: widget.project,
             index: _bottomBarIndex,
             onTap: (int index) {
               setState(() {
@@ -65,7 +68,11 @@ class _ProjectDetailMainState extends State<ProjectDetailMain> {
                 _pageController.jumpToPage(index);
               });
             }),
+        endDrawer: ProjectDrawerWidget(
+          project: widget.project,
+        ),
         appBar: AppBar(
+          backgroundColor: DialogColorConvert.getColor(DialogColorConvert.getDialogColor(widget.project.color)),
           actions: _page == 0
               ? null
               : <Widget>[
@@ -126,13 +133,13 @@ class _ProjectDetailMainState extends State<ProjectDetailMain> {
       case 1:
         floatingActionButton = FloatingActionButton(
           tooltip: "Tilføj ny opgave",
-          backgroundColor: Config.floatingActionButtonColor,
+          backgroundColor: DialogColorConvert.getColor(DialogColorConvert.getDialogColor(widget.project.color)),
           child: Icon(Icons.add),
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
                 fullscreenDialog: true,
                 builder: (BuildContext context) => TaskCreate(
-                      projectId: widget.project.id,
+                      project: widget.project,
                     )));
           },
         );
@@ -140,7 +147,7 @@ class _ProjectDetailMainState extends State<ProjectDetailMain> {
       case 2:
         floatingActionButton = FloatingActionButton(
           tooltip: "Tilføj kommentar",
-          backgroundColor: Config.floatingActionButtonColor,
+          backgroundColor: DialogColorConvert.getColor(DialogColorConvert.getDialogColor(widget.project.color)),
           child: Icon(Icons.add_comment),
           onPressed: () {
             _showCreateCommentDialog(context);
@@ -150,7 +157,7 @@ class _ProjectDetailMainState extends State<ProjectDetailMain> {
       case 3:
         floatingActionButton = FloatingActionButton(
           tooltip: "Tilføj fil",
-          backgroundColor: Config.floatingActionButtonColor,
+          backgroundColor: DialogColorConvert.getColor(DialogColorConvert.getDialogColor(widget.project.color)),
           child: Icon(Icons.file_upload),
           onPressed: () {
             _showUploadFileDialog(context);
@@ -182,6 +189,7 @@ class _ProjectDetailMainState extends State<ProjectDetailMain> {
           await Navigator.of(context).push<FileCreateData>(MaterialPageRoute(
               fullscreenDialog: true,
               builder: (BuildContext context) => FileCreate(
+                    project: widget.project,
                     path: path,
                   )));
 
@@ -235,7 +243,9 @@ class _ProjectDetailMainState extends State<ProjectDetailMain> {
   void _showCreateCommentDialog(BuildContext context) async {
     String comment = await Navigator.of(context).push(MaterialPageRoute(
         fullscreenDialog: true,
-        builder: (BuildContext pageContext) => CommentCreate()));
+        builder: (BuildContext pageContext) => CommentCreate(
+          project: widget.project,
+        )));
 
     if (comment != null && comment.isNotEmpty) {
       CommentData commentData = CommentData(

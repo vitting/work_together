@@ -24,6 +24,6 @@ class UserFirestore {
   }
 
   static Future<QuerySnapshot> getAllUsers() {
-    return _firestore.collection(_collectionName).getDocuments();
+    return _firestore.collection(_collectionName).orderBy("name").getDocuments();
   }
 }

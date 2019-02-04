@@ -13,36 +13,38 @@ class BottomSheetEditDelete extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: backgroundColor,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          ListTile(
-            leading: Icon(
-              Icons.edit,
-              color: textColor,
+          Card(
+            color: backgroundColor,
+            child: ListTile(
+              leading: Icon(
+                Icons.edit,
+                color: textColor,
+              ),
+              title: Text(
+                "Rediger",
+                style: TextStyle(color: textColor),
+              ),
+              onTap: () {
+                if (onTap != null) {
+                  onTap(BottomMenuAction.edit);
+                }
+              },
             ),
-            title: Text(
-              "Rediger",
-              style: TextStyle(color: textColor),
+          ),
+          Card(
+            color: backgroundColor,
+            child: ListTile(
+              leading: Icon(Icons.delete_forever, color: textColor),
+              title: Text("Slet", style: TextStyle(color: textColor)),
+              onTap: () {
+                if (onTap != null) {
+                  onTap(BottomMenuAction.delete);
+                }
+              },
             ),
-            onTap: () {
-              if (onTap != null) {
-                onTap(BottomMenuAction.edit);
-              }
-            },
-          ),
-          Divider(
-            color: textColor,
-          ),
-          ListTile(
-            leading: Icon(Icons.delete_forever, color: textColor),
-            title: Text("Slet", style: TextStyle(color: textColor)),
-            onTap: () {
-              if (onTap != null) {
-                onTap(BottomMenuAction.delete);
-              }
-            },
           )
         ],
       ),

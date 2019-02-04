@@ -89,6 +89,7 @@ class ProjectDetailComments extends StatelessWidget {
           String comment = await showDialog<String>(
               context: context,
               builder: (BuildContext dialogContext) => CommentCreate(
+                    project: project,
                     comment: item.comment,
                   ));
 

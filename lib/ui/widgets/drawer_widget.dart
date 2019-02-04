@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:work_together/helpers/config.dart';
 import 'package:work_together/helpers/user_auth.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
+import 'package:work_together/ui/project/participants/user_project_invites_actions.dart';
 import 'package:work_together/ui/widgets/circle_profile_image_widget.dart';
 
 class DrawerWidget extends StatelessWidget {
@@ -20,6 +21,18 @@ class DrawerWidget extends StatelessWidget {
                 image: MainInherited.of(context).userData.photoUrl,
                 size: 80,
               ),
+            ),
+            ListTile(
+              leading: Icon(Icons.person, color: Config.drawerIconColor),
+              title: Text("Invitation til projekter"),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  fullscreenDialog: true,
+                  builder: (BuildContext context) => UserProjectInvitesActions(
+                    user: MainInherited.of(context).userData,
+                  )
+                ));
+              },
             ),
             ListTile(
               leading: Icon(FontAwesomeIcons.signOutAlt, color: Config.drawerIconColor),

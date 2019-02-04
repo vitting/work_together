@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:work_together/helpers/project_data.dart';
+import 'package:work_together/ui/widgets/dialog_color_widget.dart';
 import 'package:work_together/ui/widgets/dot_icon_widget.dart';
 import 'package:work_together/ui/widgets/round_button_widget.dart';
 
 class CommentCreate extends StatefulWidget {
   static final String routeName = "commentcreate";
+  final ProjectData project;
   final String comment;
 
-  const CommentCreate({Key key, this.comment = ""}) : super(key: key);
+  const CommentCreate({Key key, this.project, this.comment = ""}) : super(key: key);
 
   @override
   CommentCreateState createState() {
@@ -17,11 +20,12 @@ class CommentCreate extends StatefulWidget {
 class CommentCreateState extends State<CommentCreate> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _buttonText = "Opret";
+  Color _backgroundColor;
 
   @override
   void initState() {
     super.initState();
-
+    _backgroundColor = DialogColorConvert.getColor(DialogColorConvert.getDialogColor(widget.project.color));
     if (widget.comment != null && widget.comment.isNotEmpty) {
       _buttonText = "Gem";
     }
@@ -31,6 +35,7 @@ class CommentCreateState extends State<CommentCreate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: _backgroundColor,
         title: Text("Skriv kommentar"),
       ),
       body: Card(
@@ -44,6 +49,7 @@ class CommentCreateState extends State<CommentCreate> {
                     children: <Widget>[
                       DotIcon(
                         icon: Icons.comment,
+                        backgroundColor: _backgroundColor,
                       ),
                       TextFormField(
                           initialValue: widget.comment,
@@ -56,6 +62,7 @@ class CommentCreateState extends State<CommentCreate> {
                       Padding(
                         padding: const EdgeInsets.only(top: 20),
                         child: RoundButton(
+                          backgroundColor: _backgroundColor,
                           text: _buttonText,
                           onPressed: () {
                             _formKey.currentState.save();

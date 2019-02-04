@@ -74,7 +74,7 @@ class ProjectDetailFiles extends StatelessWidget {
           FileCreateData data = await Navigator.of(context)
               .push<FileCreateData>(MaterialPageRoute(
                   builder: (BuildContext context) =>
-                      FileCreate(fileData: item)));
+                      FileCreate(fileData: item, project: project)));
 
           if (data != null) {
             item.originalFilename = data.name;

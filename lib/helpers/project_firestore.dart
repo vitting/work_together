@@ -37,9 +37,25 @@ class ProjectFirestore {
     });
   }
 
+  static Future<void> addWaitingParticipant(String id, String userId) {
+    return _firestore.collection(_collectionName).document(id).updateData({
+      "participantsWaiting": FieldValue.arrayUnion([userId])
+    });
+  }
+
   static Future<void> removeParticipant(String id, String userId) {
     return _firestore.collection(_collectionName).document(id).updateData({
       "participants": FieldValue.arrayRemove([userId])
     });
+  }
+
+  static Future<void> removeWaitingParticipant(String id, String userId) {
+    return _firestore.collection(_collectionName).document(id).updateData({
+      "participantsWaiting": FieldValue.arrayRemove([userId])
+    });
+  }
+
+  static Future<QuerySnapshot> getProjectsWaitingForUserAccept(String userId) {
+    return _firestore.collection(_collectionName).where("participantsWaiting", arrayContains: userId).getDocuments();
   }
 }

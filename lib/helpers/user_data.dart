@@ -15,9 +15,7 @@ class UserData {
   String photoFileName;
   bool enabled;
   bool admin;
-  List<String>
-      memberOfGroups; //TODO: Should we have only project membership? and delete groups?
-
+  
   UserData(
       {this.id,
       @required this.email,
@@ -26,8 +24,7 @@ class UserData {
       this.photoUrl,
       this.photoFileName,
       this.admin = false,
-      this.enabled = true,
-      this.memberOfGroups});
+      this.enabled = true});
 
   Future<void> delete() {
     return UserFirestore.delete(id);
@@ -49,6 +46,10 @@ class UserData {
       "enabled": enabled,
       "admin": admin
     };
+  }
+
+  Future<List<ProjectData>> getProjectsWaitingForAccept() {
+    return ProjectData.getProjectsWaitingForUserAccept(id);
   }
 
   Stream<QuerySnapshot> getProjects() {

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:work_together/helpers/config.dart';
 import 'package:work_together/helpers/file_data.dart';
+import 'package:work_together/helpers/project_data.dart';
+import 'package:work_together/ui/widgets/dialog_color_widget.dart';
 import 'package:work_together/ui/widgets/dot_icon_widget.dart';
 import 'package:work_together/ui/widgets/round_button_widget.dart';
 
@@ -16,8 +18,9 @@ class FileCreateData {
 class FileCreate extends StatefulWidget {
   final String path;
   final FileData fileData;
+  final ProjectData project;
 
-  const FileCreate({Key key, this.path, this.fileData}) : super(key: key);
+  const FileCreate({Key key, this.path, this.fileData, this.project}) : super(key: key);
   @override
   _FileCreateState createState() => _FileCreateState();
 }
@@ -25,9 +28,12 @@ class FileCreate extends StatefulWidget {
 class _FileCreateState extends State<FileCreate> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   FileCreateData _fileCreateData;
+  Color _backgroundColor;
+
   @override
   void initState() {
     super.initState();
+    _backgroundColor = DialogColorConvert.getColor(DialogColorConvert.getDialogColor(widget.project.color));
     if (widget.fileData == null) {
       String filename = basenameWithoutExtension(widget.path);
       String fileExtension =
@@ -47,6 +53,7 @@ class _FileCreateState extends State<FileCreate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: _backgroundColor,
         title: Text("Tilføj fil"),
       ),
       body: Card(
@@ -63,6 +70,7 @@ class _FileCreateState extends State<FileCreate> {
                       Config.isImage(_fileCreateData.extension) ? DotIcon(
                         imagePath: widget.path ?? widget.fileData.downloadUrl,
                       ) : DotIcon(
+                        backgroundColor: _backgroundColor,
                         icon: Config.getFileIcon(_fileCreateData.extension),
                       ),
                       Row(
@@ -101,6 +109,7 @@ class _FileCreateState extends State<FileCreate> {
                     children: <Widget>[
                       RoundButton(
                         text: "Gem",
+                        backgroundColor: _backgroundColor,
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
                             _formKey.currentState.save();

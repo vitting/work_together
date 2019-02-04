@@ -3,6 +3,29 @@ import 'package:meta/meta.dart';
 import 'package:work_together/helpers/request_firestore.dart';
 import 'package:work_together/helpers/system_helpers.dart';
 
+enum ParticipantsStatus { add, remove, waiting, declined }
+
+class RequestConvert {
+  static ParticipantsStatus requestStatusToParticipantsStatus(String requestStatus) {
+    ParticipantsStatus value;
+    switch (requestStatus) {
+      case "a":
+        value = ParticipantsStatus.remove;
+        break;
+      case "w":
+        value = ParticipantsStatus.waiting;
+        break;
+      case "d":
+        value = ParticipantsStatus.declined;
+        break;
+      default:
+        value = ParticipantsStatus.add;
+    }
+
+    return value;
+  }
+}
+
 class RequestData {
   String id;
   DateTime requestDate;
@@ -59,17 +82,17 @@ class RequestData {
         requestStatus: item["requestStatus"]);
   }
 
-  static Future<Map<String, RequestData>> getProjectRequestsForUser(
+  static Future<Map<String, RequestData>> getProjectInvitesForUser(
       String userId) async {
     QuerySnapshot snapshot =
-        await RequestFirestore.getProjectRequestsForUser(userId);
+        await RequestFirestore.getProjectInvitesForUser(userId);
     Map<String, RequestData> map = Map<String, RequestData>();
     List<RequestData> list = snapshot.documents
         .map<RequestData>(
             (DocumentSnapshot doc) => RequestData.fromMap(doc.data))
         .toList();
     list.forEach((RequestData data) {
-      map[data.userId] = data;
+      map[data.projectId] = data;
     });
 
     return map;
@@ -92,11 +115,11 @@ class RequestData {
     return map;
   }
 
-  static Future<Map<String, RequestData>> getProjectRequestStatusForUsers(
+  static Future<Map<String, RequestData>> getProjectInvitesStatusForUsers(
       String projectId) async {
     Map<String, RequestData> map = Map<String, RequestData>();
     QuerySnapshot snapshot =
-        await RequestFirestore.getProjectRequestStatusForUsers(projectId);
+        await RequestFirestore.getProjectInviteStatusForUsers(projectId);
     List<RequestData> list = snapshot.documents
         .map<RequestData>(
             (DocumentSnapshot doc) => RequestData.fromMap(doc.data))
@@ -108,9 +131,9 @@ class RequestData {
     return map;
   }
 
-  static Future<RequestData> getProjectRequestStatusForUser(String projectId, String userId) async {
+  static Future<RequestData> getProjectInviteStatusForUser(String projectId, String userId) async {
     RequestData value;
-    QuerySnapshot snapshot =await RequestFirestore.getProjectRequestStatusForUsers(projectId);
+    QuerySnapshot snapshot =await RequestFirestore.getProjectInviteStatusForUsers(projectId);
     if (snapshot.documents.length != 0) {
       value = RequestData.fromMap(snapshot.documents[0].data);
     }
