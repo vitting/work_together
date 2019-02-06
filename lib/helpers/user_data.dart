@@ -83,6 +83,16 @@ class UserData {
     return userData;
   }
 
+  static Future<UserData> getUser(String userId) async {
+    UserData user;
+    DocumentSnapshot snapshot = await UserFirestore.getUser(userId);
+    if (snapshot.exists) {
+      user = UserData.fromMap(snapshot.data);
+    }
+
+    return  user;
+  }
+
   static Future<List<UserData>> getAllUsers() async {
     QuerySnapshot snapshot = await UserFirestore.getAllUsers();
     return snapshot.documents.map((DocumentSnapshot doc) {

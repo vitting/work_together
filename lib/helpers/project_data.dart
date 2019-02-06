@@ -10,6 +10,7 @@ import 'package:work_together/helpers/task_data.dart';
 class ProjectData extends ItemData {
   List<String> participants;
   List<String> participantsWaiting;
+  List<String> projectAdmins;
 
   ProjectData(
       {String id,
@@ -21,9 +22,10 @@ class ProjectData extends ItemData {
       DateTime updatedDate,
       int progress = 0,
       int numberOfSub = 0,
-      int color = 0,
+      int color = 3,
       this.participantsWaiting,
-      this.participants})
+      this.participants,
+      this.projectAdmins})
       : super(
             id: id,
             createdByUserId: createdByUserId,
@@ -41,7 +43,8 @@ class ProjectData extends ItemData {
     return super.toMap()
       ..addAll({
         "participants": participants,
-        "participantsWaiting": participantsWaiting
+        "participantsWaiting": participantsWaiting,
+        "projectAdmins": projectAdmins
       });
   }
 
@@ -53,10 +56,19 @@ class ProjectData extends ItemData {
       createdByUserId = updatedByUserId;
       participants = [createdByUserId];
       participantsWaiting = [];
+      projectAdmins = [createdByUserId];
       return ProjectFirestore.add(this);
     } else {
       return ProjectFirestore.update(this);
     }
+  }
+
+  Future<void> addProjectAdmin(String userId) {
+    return ProjectFirestore.addProjectAdmin(id, userId);
+  }
+
+  Future<void> removeProjectAdmin(String userId) {
+    return ProjectFirestore.removeProjectAdmin(id, userId);
   }
 
   Future<void> addParticipant(String userId) {
@@ -85,7 +97,7 @@ class ProjectData extends ItemData {
   }
 
   Future<void> delete() {
-    /// TODO: We have to delete tasks, comments, files
+    /// TODO: We have to delete tasks, comments, files, requests
     return ProjectFirestore.delete(id);
   }
 
@@ -125,6 +137,9 @@ class ProjectData extends ItemData {
         progress: item["progress"],
         numberOfSub: item["numberOfSub"],
         color: item["color"],
+        projectAdmins: (item["projectAdmins"] as List<dynamic>)
+            .map((dynamic item) => (item as String))
+            .toList(),
         participantsWaiting: (item["participantsWaiting"] as List<dynamic>)
             .map((dynamic item) => (item as String))
             .toList(),
@@ -137,8 +152,10 @@ class ProjectData extends ItemData {
     return ProjectFirestore.getProjectsByUserIdAsStream(userId);
   }
 
-  static Future<List<ProjectData>> getProjectsWaitingForUserAccept(String userId) async {
-    QuerySnapshot snapshot = await ProjectFirestore.getProjectsWaitingForUserAccept(userId);
+  static Future<List<ProjectData>> getProjectsWaitingForUserAccept(
+      String userId) async {
+    QuerySnapshot snapshot =
+        await ProjectFirestore.getProjectsWaitingForUserAccept(userId);
     return snapshot.documents.map<ProjectData>((DocumentSnapshot doc) {
       return ProjectData.fromMap(doc.data);
     }).toList();

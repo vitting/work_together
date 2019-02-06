@@ -19,7 +19,7 @@ class DialogColorConvert {
     Color value;
     switch (color) {
       case DialogColors.yellow:
-        value = Colors.yellow[600];
+        value = Colors.yellow[700];
         break;
       case DialogColors.red:
         value = Colors.red[800];
@@ -31,7 +31,7 @@ class DialogColorConvert {
         value = Colors.blue;
         break;
       case DialogColors.orange:
-        value = Colors.orange;
+        value = Colors.orange[700];
         break;
       case DialogColors.green:
         value = Colors.green;

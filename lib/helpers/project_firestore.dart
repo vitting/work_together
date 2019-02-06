@@ -31,6 +31,18 @@ class ProjectFirestore {
     return _firestore.collection(_collectionName).where("participants", arrayContains: userId).orderBy("title").snapshots();
   }
 
+  static Future<void> addProjectAdmin(String id, String userId) {
+    return _firestore.collection(_collectionName).document(id).updateData({
+      "projectAdmins": FieldValue.arrayUnion([userId])
+    });
+  }
+
+  static Future<void> removeProjectAdmin(String id, String userId) {
+    return _firestore.collection(_collectionName).document(id).updateData({
+      "projectAdmins": FieldValue.arrayRemove([userId])
+    });
+  }
+
   static Future<void> addParticipant(String id, String userId) {
     return _firestore.collection(_collectionName).document(id).updateData({
       "participants": FieldValue.arrayUnion([userId])

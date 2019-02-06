@@ -6,6 +6,7 @@ import 'package:work_together/helpers/config.dart';
 import 'package:work_together/helpers/project_data.dart';
 import 'package:work_together/helpers/task_data.dart';
 import 'package:work_together/ui/task/task_create.dart';
+import 'package:work_together/ui/task/task_detail.dart';
 import 'package:work_together/ui/task/task_row_widget.dart';
 import 'package:work_together/ui/widgets/bottom_sheet_edit_delete_widget.dart';
 import 'package:work_together/ui/widgets/dialog_color_widget.dart';
@@ -53,7 +54,13 @@ class ProjectDetailTasks extends StatelessWidget {
                 _showBottomMenuAction(
                     context, await _showBottomMenu(context), task);
               },
-              onTapRow: (TaskData item) {},
+              onTapRow: (TaskData item) {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => TaskDetail(
+                    task: item,
+                  )
+                ));
+              },
             );
           },
         );

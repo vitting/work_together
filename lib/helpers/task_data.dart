@@ -4,8 +4,10 @@ import 'package:work_together/helpers/comment_data.dart';
 import 'package:work_together/helpers/file_data.dart';
 import 'package:work_together/helpers/item_data.dart';
 import 'package:work_together/helpers/participant_data.dart';
+import 'package:work_together/helpers/sub_task_data.dart';
 import 'package:work_together/helpers/system_helpers.dart';
 import 'package:work_together/helpers/task_firestore.dart';
+import 'package:work_together/helpers/user_data.dart';
 
 class TaskData extends ItemData {
   String projectId;
@@ -20,7 +22,7 @@ class TaskData extends ItemData {
       DateTime updatedDate,
       int progress = 0,
       int numberOfSub = 0,
-      int color = 0,
+      int color = 3,
       @required this.projectId})
       : super(
             id: id,
@@ -54,6 +56,10 @@ class TaskData extends ItemData {
     }
   }
 
+  Future<UserData> getCreatedByUser() {
+    return UserData.getUser(createdByUserId);
+  }
+
   Future<void> updateColor(int color) {
     this.color = color;
     return TaskFirestore.updateColor(id, color);
@@ -63,7 +69,9 @@ class TaskData extends ItemData {
     return TaskFirestore.delete(id);
   }
 
-  void getSubTasks() {}
+  Future<List<SubTaskData>> getSubTasks() {
+    return SubTaskData.getSubTasks(id);
+  }
 
   List<ParticipantData> getParticipants() {
     return null;
@@ -76,6 +84,7 @@ class TaskData extends ItemData {
   List<FileData> getFiles() {
     return null;
   }
+  
 
   factory TaskData.fromMap(Map<String, dynamic> item) {
     return TaskData(

@@ -6,14 +6,50 @@ class SubTaskFirestore {
   static String _collectionName = "subtasks";
 
   static Future<void> add(SubTaskData item) {
-    return _firestore.collection(_collectionName).document(item.id).setData(item.toMap());
-  } 
+    return _firestore
+        .collection(_collectionName)
+        .document(item.id)
+        .setData(item.toMap());
+  }
 
   static Future<void> update(SubTaskData item) {
-    return _firestore.collection(_collectionName).document(item.id).updateData(item.toMap());
-  } 
+    return _firestore
+        .collection(_collectionName)
+        .document(item.id)
+        .updateData(item.toMap());
+  }
 
   static Future<void> delete(String id) {
     return _firestore.collection(_collectionName).document(id).delete();
-  }  
+  }
+
+  static Future<void> subTaskState(
+      String id, String closedByUserId, Timestamp closedDate, bool closed) {
+    return _firestore.collection(_collectionName).document(id).updateData({
+      "closedByUserId": closedByUserId,
+      "closedDate": closedDate,
+      "closed": closed
+    });
+  }
+
+  static Future<void> updateTitle(String id, String title) {
+    return _firestore
+        .collection(_collectionName)
+        .document(id)
+        .updateData({"title": title});
+  }
+
+  static Future<void> updateDeleted(String id, bool deleted) {
+    return _firestore
+        .collection(_collectionName)
+        .document(id)
+        .updateData({"deleted": deleted});
+  }
+
+  static Future<QuerySnapshot> getSubTasksByTaskId(String taskId) {
+    return _firestore
+        .collection(_collectionName)
+        .where("taskId", isEqualTo: taskId)
+        .getDocuments();
+  }
 }

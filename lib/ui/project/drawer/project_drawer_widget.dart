@@ -41,13 +41,6 @@ class ProjectDrawerWidget extends StatelessWidget {
               ));
               },
             ) : Container(),
-            ListTile(
-              leading: Icon(Icons.person_add, color: Config.drawerProjectIconColor),
-              title: Text("Projekt invitationer"),
-              onTap: () {
-                
-              },
-            )
           ],
         ),
       ),

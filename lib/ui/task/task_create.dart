@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:work_together/helpers/project_data.dart';
 import 'package:work_together/helpers/task_data.dart';
@@ -65,6 +66,7 @@ class TaskCreateState extends State<TaskCreate> {
                   TextFormField(
                     initialValue: _task.title,
                     decoration: InputDecoration(labelText: "Titel"),
+                    inputFormatters: [LengthLimitingTextInputFormatter(200)],
                     autofocus: false,
                     validator: (String value) {
                       if (value.isEmpty) {
@@ -78,12 +80,8 @@ class TaskCreateState extends State<TaskCreate> {
                   TextFormField(
                     initialValue: _task.description,
                     maxLines: 5,
+                    inputFormatters: [LengthLimitingTextInputFormatter(10000)],
                     decoration: InputDecoration(labelText: "Beskrivelse"),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return "Beskrivelse skal udfyldes";
-                      }
-                    },
                     onSaved: (String value) {
                       _task.description = value.trim();
                     },

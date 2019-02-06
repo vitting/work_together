@@ -73,7 +73,7 @@ class ProjectCreateState extends State<ProjectCreate> {
                 ),
                 TextFormField(
                   initialValue: _project.description,
-                  inputFormatters: [LengthLimitingTextInputFormatter(2000)],
+                  inputFormatters: [LengthLimitingTextInputFormatter(10000)],
                   maxLines: 10,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(labelText: "Beskrivelse"),
