@@ -31,7 +31,7 @@ class TaskCreateState extends State<TaskCreate> {
   void initState() {
     super.initState();
 
-    _backgroundColor = DialogColorConvert.getColor(DialogColorConvert.getDialogColor(widget.project.color));
+    _backgroundColor = DialogColorConvert.getColorFromInt(widget.project.color);
     if (widget.task != null) {
       _pageTitle = "Redigere opgave";
       _task = widget.task;

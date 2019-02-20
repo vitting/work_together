@@ -8,6 +8,7 @@ import 'package:work_together/helpers/project_data.dart';
 import 'package:work_together/ui/file/file_create.dart';
 import 'package:work_together/ui/file/file_row_widget.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
+import 'package:work_together/ui/project/detail/project_detail_file_image_viewer.dart';
 import 'package:work_together/ui/widgets/bottom_sheet_edit_delete_widget.dart';
 import 'package:work_together/ui/widgets/dialog_color_widget.dart';
 import 'package:work_together/ui/widgets/no_data_widget.dart';
@@ -38,6 +39,11 @@ class ProjectDetailFiles extends StatelessWidget {
             DocumentSnapshot doc = snapshot.data.documents[position];
             FileData file = FileData.fromMap(doc.data);
             return FileRow(
+              onTapRow: (FileData item) async {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => ProjectDetailFileImageViewer(url: file.downloadUrl)
+                ));
+              },
               backgroundColor: DialogColorConvert.getDialogLightColor(project.color),
               textColor: Config.rowTextColor,
               file: file,
@@ -57,7 +63,7 @@ class ProjectDetailFiles extends StatelessWidget {
         context: context,
         builder: (BuildContext dialogContext) {
           return BottomSheetEditDelete(
-            backgroundColor: Config.bottomSheetBackgroundColor,
+            backgroundColor: DialogColorConvert.getColorFromInt(project.color),
             textColor: Config.bottomSheetTextColor,
             onTap: (BottomMenuAction action) {
               Navigator.of(dialogContext).pop(action);

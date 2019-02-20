@@ -19,7 +19,7 @@ class ProjectDrawerWidget extends StatelessWidget {
           children: <Widget>[
             UserAccountsDrawerHeader(
               decoration: BoxDecoration(
-                color: DialogColorConvert.getColor(DialogColorConvert.getDialogColor(project.color))
+                color: DialogColorConvert.getColorFromInt(project.color)
               ),
               accountEmail: Text(project.title, maxLines: 2, style: TextStyle(fontWeight: FontWeight.bold, color: DialogColorConvert.getDialogTextColor(project.color))),
               accountName: Text("Projekt:", style: TextStyle(color: DialogColorConvert.getDialogTextColor(project.color))),

@@ -15,7 +15,7 @@ class Config {
   static final Color floatingActionButtonColor = Colors.blueGrey[600];
   static final Color rowBackgroundColor = Colors.blue[800];
   static final Color rowTextColor = Colors.black;
-  static final Color bottomSheetBackgroundColor = Colors.blueGrey[800];
+  static final Color bottomSheetBackgroundColor = Colors.blueGrey[600];
   static final Color bottomSheetTextColor = Colors.white;
   static final List<String> allowedFileExtensions = [
     "jpg",

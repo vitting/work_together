@@ -1,8 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:work_together/helpers/config.dart';
 import 'package:work_together/helpers/date_time_helpers.dart';
 import 'package:work_together/helpers/file_data.dart';
+import 'package:work_together/ui/widgets/square_thumb_image_widget.dart';
 import 'package:work_together/ui/widgets/text_expand_widget.dart';
 import 'package:work_together/ui/widgets/title_row_icon_widget.dart';
 
@@ -94,16 +94,9 @@ class FileRow extends StatelessWidget {
 
   dynamic _getIconImage(FileData file) {
     if (Config.isImage(file.extension)) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(4),
-        child: CachedNetworkImage(
-          imageUrl: file.downloadUrl,
-          width: 40,
-          height: 40,
-          fit: BoxFit.cover,
-          errorWidget: Icon(Icons.image, size: 40, color: textColor),
-          placeholder: Icon(Icons.image, size: 40, color: textColor),
-        ),
+      return SquareThumbImage(
+        textColor: textColor,
+        imageUrl: file.downloadUrl,
       );
     } else {
       return Container(

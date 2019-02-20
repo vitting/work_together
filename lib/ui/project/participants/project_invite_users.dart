@@ -24,7 +24,7 @@ class _ProjectInviteUsersState extends State<ProjectInviteUsers> {
   @override
   void initState() {
     super.initState();
-    _backgroundColor = DialogColorConvert.getColor(DialogColorConvert.getDialogColor(widget.project.color));
+    _backgroundColor = DialogColorConvert.getColorFromInt(widget.project.color);
     _getRequestData();
   }
 
@@ -33,6 +33,7 @@ class _ProjectInviteUsersState extends State<ProjectInviteUsers> {
     return Scaffold(
       appBar: AppBar(title: Text("Invitere brugere"), backgroundColor: _backgroundColor),
       body: LoaderProgress(
+        color: DialogColorConvert.getColorFromInt(widget.project.color),
         showStream: MainInherited.of(context).loaderProgressStream,
         child: FutureBuilder(
           future: UserData.getAllUsers(),

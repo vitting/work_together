@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:work_together/helpers/date_time_helpers.dart';
 import 'package:work_together/helpers/sub_task_data.dart';
+import 'package:work_together/helpers/user_data.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
 
 class SubTaskRow extends StatefulWidget {
@@ -7,8 +9,10 @@ class SubTaskRow extends StatefulWidget {
   final Color backgroundColor;
   final Color activeCheckcolor;
   final Color dismissColor;
+  final Color textColor;
   final ValueChanged<bool> onDismissed;
   final ValueChanged<SubTaskData> onTap;
+  final ValueChanged<bool> onCheckboxTap;
 
   const SubTaskRow(
       {Key key,
@@ -17,6 +21,8 @@ class SubTaskRow extends StatefulWidget {
       this.backgroundColor,
       this.activeCheckcolor,
       this.dismissColor,
+      this.onCheckboxTap,
+      this.textColor,
       this.onTap})
       : super(key: key);
   @override
@@ -74,12 +80,64 @@ class _SubTaskRowState extends State<SubTaskRow> {
             color: widget.backgroundColor,
             child: ListTile(
                 onTap: () {
-                  widget.onTap(widget.subTask);
+                  if (!_state) {
+                    widget.onTap(widget.subTask);
+                  }
                 },
                 title: Text(widget.subTask.title,
                     style: TextStyle(
                         fontWeight:
                             _state ? FontWeight.bold : FontWeight.normal)),
+                subtitle: !widget.subTask.closed
+                    ? null
+                    : FutureBuilder(
+                        future: widget.subTask.getClosedByUser(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<UserData> snapshot) {
+                          if (!snapshot.hasData) {
+                            return Container();
+                          }
+
+                          String name = snapshot.data.name;
+                          return Column(
+                            children: <Widget>[
+                              SizedBox(height: 5),
+                              Row(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 5),
+                                    child: Icon(
+                                      Icons.calendar_today,
+                                      size: 14,
+                                      color: widget.textColor,
+                                    ),
+                                  ),
+                                  Text(
+                                      DateTimeHelpers.ddmmyyyyHHnn(
+                                          widget.subTask.closedDate),
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: widget.textColor))
+                                ],
+                              ),
+                              SizedBox(height: 5),
+                              Row(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 5),
+                                    child: Icon(Icons.person,
+                                        size: 14, color: widget.textColor),
+                                  ),
+                                  Text(name,
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: widget.textColor))
+                                ],
+                              )
+                            ],
+                          );
+                        },
+                      ),
                 leading: Checkbox(
                   activeColor: widget.activeCheckcolor,
                   value: _state,
@@ -89,6 +147,10 @@ class _SubTaskRowState extends State<SubTaskRow> {
                     setState(() {
                       _state = value;
                     });
+
+                    if (widget.onCheckboxTap != null) {
+                      widget.onCheckboxTap(value);
+                    }
                   },
                 ))));
   }

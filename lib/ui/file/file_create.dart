@@ -33,7 +33,7 @@ class _FileCreateState extends State<FileCreate> {
   @override
   void initState() {
     super.initState();
-    _backgroundColor = DialogColorConvert.getColor(DialogColorConvert.getDialogColor(widget.project.color));
+    _backgroundColor = DialogColorConvert.getColorFromInt(widget.project.color);
     if (widget.fileData == null) {
       String filename = basenameWithoutExtension(widget.path);
       String fileExtension =

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:work_together/helpers/sub_task_firestore.dart';
 import 'package:work_together/helpers/system_helpers.dart';
+import 'package:work_together/helpers/user_data.dart';
 
 class SubTaskData {
   String id;
@@ -68,6 +69,15 @@ class SubTaskData {
     return SubTaskFirestore.updateTitle(id, title);
   }
 
+  Future<UserData> getClosedByUser() async {
+    UserData user;
+    if (closedByUserId != null) {
+      user = await UserData.getUser(closedByUserId);  
+    }
+
+    return user;
+  }
+
   factory SubTaskData.fromMap(Map<String, dynamic> item) {
     return SubTaskData(
         projectId: item["projectId"],
@@ -83,11 +93,7 @@ class SubTaskData {
 
   factory SubTaskData.dummy() {
     return SubTaskData(
-      createdByUserId: "",
-      projectId: "",
-      taskId: "",
-      title: ""
-    );
+        createdByUserId: "", projectId: "", taskId: "", title: "");
   }
 
   static Future<List<SubTaskData>> getSubTasks(String taskId) async {

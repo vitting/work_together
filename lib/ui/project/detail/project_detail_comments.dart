@@ -11,7 +11,7 @@ import 'package:work_together/ui/main/main_inheretedwidget.dart';
 import 'package:work_together/ui/widgets/bottom_sheet_edit_delete_widget.dart';
 import 'package:work_together/ui/widgets/dialog_color_widget.dart';
 import 'package:work_together/ui/widgets/no_data_widget.dart';
-
+///TODO: Add a comment counter.
 class ProjectDetailComments extends StatelessWidget {
   final ProjectData project;
 
@@ -72,7 +72,7 @@ class ProjectDetailComments extends StatelessWidget {
         context: context,
         builder: (BuildContext dialogContext) {
           return BottomSheetEditDelete(
-            backgroundColor: Config.bottomSheetBackgroundColor,
+            backgroundColor: DialogColorConvert.getColorFromInt(project.color),
             textColor: Config.bottomSheetTextColor,
             onTap: (BottomMenuAction action) {
               Navigator.of(dialogContext).pop(action);

@@ -13,7 +13,7 @@ class SystemHelpers {
     return SystemChannels.textInput.invokeMethod('TextInput.hide');
   }
 
-  static Future<Null> showNavigationButtons(bool show) {
+  static Future<void> showNavigationButtons(bool show) {
     if (show) {
       return SystemChrome.setEnabledSystemUIOverlays(
           [SystemUiOverlay.top, SystemUiOverlay.bottom]);

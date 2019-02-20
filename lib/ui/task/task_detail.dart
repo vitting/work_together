@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_list_drag_and_drop/drag_and_drop_list.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:work_together/helpers/config.dart';
 import 'package:work_together/helpers/sub_task_data.dart';
 import 'package:work_together/helpers/task_data.dart';
 import 'package:work_together/helpers/user_data.dart';
 import 'package:work_together/ui/main/main_inheretedwidget.dart';
 import 'package:work_together/ui/task/sub_task_row.dart';
 import 'package:work_together/ui/widgets/dialog_color_widget.dart';
+import 'package:work_together/ui/widgets/loader_progress_widet.dart';
 import 'package:work_together/ui/widgets/no_data_widget.dart';
 import 'package:work_together/ui/widgets/round_button_widget.dart';
 
@@ -25,6 +27,7 @@ class TaskDetail extends StatefulWidget {
   }
 }
 
+///TODO: Vis info om subtask / task  og projekt
 class TaskDetailState extends State<TaskDetail> {
   List<SubTaskData> _items;
   final Future<SharedPreferences> _prefsInstance =
@@ -55,13 +58,13 @@ class TaskDetailState extends State<TaskDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: DialogColorConvert.getColor(
-              DialogColorConvert.getDialogColor(widget.task.color)),
+          backgroundColor:
+              DialogColorConvert.getColorFromInt(widget.task.color),
           title: Text("Under opgaver"),
         ),
         floatingActionButton: FloatingActionButton(
-          backgroundColor: DialogColorConvert.getColor(
-              DialogColorConvert.getDialogColor(widget.task.color)),
+          backgroundColor:
+              DialogColorConvert.getColorFromInt(widget.task.color),
           onPressed: () async {
             String text = await _showSubTaskEditDialog(context);
             if (text != null && text.isNotEmpty) {
@@ -79,28 +82,44 @@ class TaskDetailState extends State<TaskDetail> {
                       text: "Ingen under opgaver",
                     ),
                   )
-                : Container(
-                    child: DragAndDropList<SubTaskData>(
-                      _items,
-                      itemBuilder: (BuildContext context, item) {
-                        int index = _items.indexOf(item);
-                        return _createSubTaskRow(item, index);
-                      },
-                      canBeDraggedTo: (int oldIndex, int newIndex) {
-                        return true;
-                      },
-                      onDragFinish: (int before, int after) async {
-                        SubTaskData data = _items[before];
-                        _items.removeAt(before);
-                        _items.insert(after, data);
-                        _orderMap = await _saveListOrder(_items);
-                      },
-                      dragElevation: 8,
+                : LoaderProgress(
+                    showStream: MainInherited.of(context).loaderProgressStream,
+                    color:
+                        DialogColorConvert.getColorFromInt(widget.task.color),
+                    child: Container(
+                      child: _getList(),
                     ),
                   ));
   }
 
+  Widget _getList() {
+    if (_items.length == 1) {
+      return _createSubTaskRow(_items[0], 0);
+    } else {
+      return Scrollbar(
+        child: DragAndDropList<SubTaskData>(
+          _items,
+          itemBuilder: (BuildContext context, item) {
+            int index = _items.indexOf(item);
+            return _createSubTaskRow(item, index);
+          },
+          canBeDraggedTo: (int oldIndex, int newIndex) {
+            return true;
+          },
+          onDragFinish: (int before, int after) async {
+            SubTaskData data = _items[before];
+            _items.removeAt(before);
+            _items.insert(after, data);
+            _orderMap = await _saveListOrder(_items);
+          },
+          dragElevation: 8,
+        ),
+      );
+    }
+  }
+
   void _createSubTask(UserData user, String text) async {
+    MainInherited.of(context).showProgressLayer(true);
     SubTaskData subTask = SubTaskData(
       title: text,
       createdByUserId: user.id,
@@ -112,6 +131,7 @@ class TaskDetailState extends State<TaskDetail> {
     setState(() {
       _items.add(subTask);
     });
+    MainInherited.of(context).showProgressLayer(false);
   }
 
   Future<String> _showSubTaskEditDialog(BuildContext context,
@@ -123,10 +143,11 @@ class TaskDetailState extends State<TaskDetail> {
         barrierDismissible: false,
         builder: (BuildContext dialogContext) {
           return SimpleDialog(
-            contentPadding: EdgeInsets.all(10),
+            titlePadding: EdgeInsets.all(0),
+            contentPadding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
             title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[Text("Under opgave"), CloseButton()],
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[CloseButton()],
             ),
             children: <Widget>[
               Form(
@@ -135,6 +156,7 @@ class TaskDetailState extends State<TaskDetail> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     TextFormField(
+                      maxLines: 2,
                       decoration: InputDecoration(labelText: "Tekst"),
                       initialValue: text,
                       validator: (String value) {
@@ -154,10 +176,9 @@ class TaskDetailState extends State<TaskDetail> {
                     Padding(
                       padding: const EdgeInsets.only(top: 20, bottom: 10),
                       child: RoundButton(
-                        backgroundColor: DialogColorConvert.getColor(
-                            DialogColorConvert.getDialogColor(
-                                widget.task.color)),
-                        text: "Opret",
+                        backgroundColor: DialogColorConvert.getColorFromInt(
+                            widget.task.color),
+                        text: "Gem",
                         onPressed: () {
                           if (_formState.currentState.validate()) {
                             _formState.currentState.save();
@@ -175,12 +196,15 @@ class TaskDetailState extends State<TaskDetail> {
 
   Widget _createSubTaskRow(SubTaskData subTask, int index) {
     return SubTaskRow(
+      textColor: Config.rowTextColor,
       subTask: subTask,
       onTap: (_) async {
         String text = await _showSubTaskEditDialog(context, subTask);
         if (text != null && text.isNotEmpty) {
+          MainInherited.of(context).showProgressLayer(true);
           await subTask.updateTitle(text);
           setState(() {});
+          MainInherited.of(context).showProgressLayer(false);
         }
       },
       onDismissed: (bool undo) async {
@@ -194,12 +218,13 @@ class TaskDetailState extends State<TaskDetail> {
 
         setState(() {});
       },
+      onCheckboxTap: (_) {
+        _getSubTasks();
+      },
       backgroundColor:
           DialogColorConvert.getDialogLightColor(widget.task.color),
-      activeCheckcolor: DialogColorConvert.getColor(
-          DialogColorConvert.getDialogColor(widget.task.color)),
-      dismissColor: DialogColorConvert.getColor(
-          DialogColorConvert.getDialogColor(widget.task.color)),
+      activeCheckcolor: DialogColorConvert.getColorFromInt(widget.task.color),
+      dismissColor: DialogColorConvert.getColorFromInt(widget.task.color),
     );
   }
 

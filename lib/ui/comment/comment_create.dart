@@ -25,7 +25,7 @@ class CommentCreateState extends State<CommentCreate> {
   @override
   void initState() {
     super.initState();
-    _backgroundColor = DialogColorConvert.getColor(DialogColorConvert.getDialogColor(widget.project.color));
+    _backgroundColor = DialogColorConvert.getColorFromInt(widget.project.color);
     if (widget.comment != null && widget.comment.isNotEmpty) {
       _buttonText = "Gem";
     }

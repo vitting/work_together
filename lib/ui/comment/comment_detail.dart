@@ -14,7 +14,8 @@ class CommentDetail extends StatefulWidget {
   final CommentData comment;
   final int projectColor;
 
-  const CommentDetail({Key key, this.comment, this.projectColor = 0}) : super(key: key);
+  const CommentDetail({Key key, this.comment, this.projectColor = 0})
+      : super(key: key);
 
   @override
   CommentDetailState createState() {
@@ -34,10 +35,11 @@ class CommentDetailState extends State<CommentDetail> {
   @override
   Widget build(BuildContext context) {
     return LoaderProgress(
+      color: DialogColorConvert.getColorFromInt(widget.projectColor),
       showStream: MainInherited.of(context).loaderProgressStream,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blue[700],
+          backgroundColor: DialogColorConvert.getColorFromInt(widget.projectColor),
           title: Text("Kommentar"),
         ),
         body: Container(
@@ -49,13 +51,14 @@ class CommentDetailState extends State<CommentDetail> {
                 CommentRow(
                   showExpanded: true,
                   textColor: Config.rowTextColor,
-                  backgroundColor: DialogColorConvert.getDialogLightColor(widget.projectColor),
+                  backgroundColor: DialogColorConvert.getDialogLightColor(
+                      widget.projectColor),
                   comment: widget.comment,
                 ),
                 TextFieldWithBorder(
                     controller: _commentController,
                     label: "Svar på kommentar",
-                    color: Colors.blueGrey[600],
+                    color: DialogColorConvert.getColorFromInt(widget.projectColor),
                     maxLines: 2,
                     onIconButtonPressed: (String value) async {
                       if (value.isNotEmpty) {
@@ -87,7 +90,7 @@ class CommentDetailState extends State<CommentDetail> {
 
                         return CommentRow(
                           textColor: Colors.white,
-                          backgroundColor: Colors.blueGrey[400],
+                          backgroundColor: DialogColorConvert.getColorFromInt(widget.projectColor),
                           showExpanded: true,
                           comment: subComment,
                         );

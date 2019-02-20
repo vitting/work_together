@@ -15,6 +15,10 @@ enum DialogColors {
 }
 
 class DialogColorConvert {
+  static Color getColorFromInt(int value) {
+    return getColor(getDialogColor(value));
+  }
+
   static Color getColor(DialogColors color) {
     Color value;
     switch (color) {

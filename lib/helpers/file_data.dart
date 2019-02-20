@@ -56,6 +56,22 @@ class FileData {
     return FileFirestore.delete(id);
   }
 
+  Future<String> downloadFile() async {
+    final Directory systemTempDir = Directory.systemTemp;
+    final String fileLocation = "${systemTempDir.path}/$storageFilename"; 
+    final File tempFile = File(fileLocation);
+    if (tempFile.existsSync()) {
+      await tempFile.delete();
+    }
+    
+    await tempFile.create();
+
+    int totalByteCount = await FirebaseStorageHelper.downloadFile(projectId, storageFilename, tempFile);
+    print(totalByteCount);
+
+    return fileLocation;
+  }
+
   factory FileData.fromMap(Map<String, dynamic> item) {
     return FileData(
       id: item["id"],

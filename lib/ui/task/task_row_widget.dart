@@ -69,7 +69,7 @@ class TaskRow extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(right: 5),
                       child: Icon(
-                        Icons.access_time,
+                        Icons.calendar_today,
                         size: 14,
                         color: textColor,
                       ),

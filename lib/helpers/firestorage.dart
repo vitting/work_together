@@ -58,8 +58,22 @@ class FirebaseStorageHelper {
         storageFilenameWithoutExtension: uid);
   }
 
+  static Future<int> downloadFile(
+      String projectId, String storageFilename, File file) async {
+    final StorageFileDownloadTask task = _firebaseStorage
+        .ref()
+        .child("projects/$projectId/$storageFilename")
+        .writeToFile(file);
+    final FileDownloadTaskSnapshot snapshot = await task.future;
+
+    return snapshot.totalByteCount;
+  }
+
   static Future<void> deleteFile(String projectId, String filename) {
-    return _firebaseStorage.ref().child("projects/$projectId/$filename").delete();
+    return _firebaseStorage
+        .ref()
+        .child("projects/$projectId/$filename")
+        .delete();
   }
 
   static Future<void> deleteProjectFiles(String projectId) {

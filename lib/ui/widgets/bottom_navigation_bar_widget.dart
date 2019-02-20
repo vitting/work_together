@@ -14,8 +14,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      fixedColor: DialogColorConvert.getColor(
-          DialogColorConvert.getDialogColor(project.color)),
+      fixedColor: DialogColorConvert.getColorFromInt(project.color),
       type: BottomNavigationBarType.fixed,
       currentIndex: index,
       onTap: (int index) {

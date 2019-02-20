@@ -29,7 +29,8 @@ class DotIcon extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         color: backgroundColor ?? Colors.blue[700], 
-        shape: BoxShape.circle,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(4),
         image: DecorationImage(
           fit: BoxFit.cover,
           image: _getImage()

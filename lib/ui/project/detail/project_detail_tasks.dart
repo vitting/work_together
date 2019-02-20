@@ -12,6 +12,7 @@ import 'package:work_together/ui/widgets/bottom_sheet_edit_delete_widget.dart';
 import 'package:work_together/ui/widgets/dialog_color_widget.dart';
 import 'package:work_together/ui/widgets/no_data_widget.dart';
 
+///TODO: Assign files and users?
 class ProjectDetailTasks extends StatelessWidget {
   static final String routeName = "projectdetailtasks";
 
@@ -43,7 +44,8 @@ class ProjectDetailTasks extends StatelessWidget {
 
             return TaskRow(
               task: task,
-              backgroundColor: DialogColorConvert.getDialogLightColor(task.color),
+              backgroundColor:
+                  DialogColorConvert.getDialogLightColor(task.color),
               textColor: Config.rowTextColor,
               onTapColor: (DialogColors color) {
                 if (color != null) {
@@ -56,10 +58,9 @@ class ProjectDetailTasks extends StatelessWidget {
               },
               onTapRow: (TaskData item) {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => TaskDetail(
-                    task: item,
-                  )
-                ));
+                    builder: (BuildContext context) => TaskDetail(
+                          task: item,
+                        )));
               },
             );
           },
@@ -73,7 +74,7 @@ class ProjectDetailTasks extends StatelessWidget {
         context: context,
         builder: (BuildContext dialogContext) {
           return BottomSheetEditDelete(
-            backgroundColor: Config.bottomSheetBackgroundColor,
+            backgroundColor: DialogColorConvert.getColorFromInt(project.color),
             textColor: Config.bottomSheetTextColor,
             onTap: (BottomMenuAction action) {
               Navigator.of(dialogContext).pop(action);
@@ -87,7 +88,8 @@ class ProjectDetailTasks extends StatelessWidget {
     switch (action) {
       case BottomMenuAction.edit:
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => TaskCreate(task: item, project: project)));
+            builder: (BuildContext context) =>
+                TaskCreate(task: item, project: project)));
         break;
       case BottomMenuAction.delete:
         break;
